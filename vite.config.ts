@@ -10,7 +10,11 @@ const githubRepository = process.env.GITHUB_REPOSITORY?.split("/")[1];
 const productionBase = githubRepository ? `/${githubRepository}/` : "/";
 
 export default defineConfig({
+  cloudflare: false,
   tanstackStart: {
+    router: {
+      basepath: productionBase,
+    },
     prerender: {
       enabled: true,
       crawlLinks: true,
