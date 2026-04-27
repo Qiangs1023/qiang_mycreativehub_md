@@ -1,5 +1,5 @@
 import { XMLParser } from "fast-xml-parser";
-import { writeFileSync, mkdirSync } from "fs";
+import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -91,5 +91,11 @@ async function fetchRss() {
 
 fetchRss().catch((err) => {
   console.error("✗ Failed to fetch RSS feed:", err.message);
+
+  if (existsSync(OUTPUT_PATH)) {
+    console.warn(`⚠ Using existing RSS cache at: ${OUTPUT_PATH}`);
+    process.exit(0);
+  }
+
   process.exit(1);
 });

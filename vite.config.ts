@@ -6,6 +6,15 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const githubRepository = process.env.GITHUB_REPOSITORY?.split("/")[1];
+const productionBase = githubRepository ? `/${githubRepository}/` : "/";
+
 export default defineConfig({
-  base: "./",
+  tanstackStart: {
+    prerender: {
+      enabled: true,
+      crawlLinks: true,
+    },
+  },
+  base: process.env.NODE_ENV === "production" ? productionBase : "/",
 });
