@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useRouterState } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Writing } from "@/components/Writing";
 import { Footer } from "@/components/Footer";
@@ -23,10 +23,13 @@ export const Route = createFileRoute("/writing")({
 });
 
 function WritingPage() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const isWritingIndex = pathname === "/writing";
+
   return (
     <main className="relative min-h-screen pt-20">
       <Nav />
-      <Writing showAction={false} />
+      {isWritingIndex ? <Writing showAction={false} /> : <Outlet />}
       <Footer />
     </main>
   );

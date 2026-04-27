@@ -192,12 +192,22 @@
 
   /* Markdown article styles */
   .prose-custom {
+    max-width: 100%;
     color: var(--muted-foreground);
     font-size: 1.0625rem;
     line-height: 1.75;
+    letter-spacing: 0.01em;
+  }
+  .prose-custom > :first-child {
+    margin-top: 0;
   }
   .prose-custom > * + * {
     margin-top: 1.25em;
+  }
+  .prose-custom > p:first-of-type {
+    color: var(--foreground);
+    font-size: 1.25rem;
+    line-height: 1.9;
   }
   .prose-custom h2 {
     font-family: "Fraunces", ui-serif, Georgia, serif;
@@ -206,8 +216,11 @@
     line-height: 1.2;
     color: var(--foreground);
     margin-top: 2.25em;
-    margin-bottom: 0.6em;
+    margin-bottom: 0.75em;
+    padding-top: 1em;
+    border-top: 1px solid var(--hairline);
     letter-spacing: -0.01em;
+    scroll-margin-top: 7rem;
   }
   .prose-custom h3 {
     font-family: "Fraunces", ui-serif, Georgia, serif;
@@ -217,6 +230,7 @@
     color: var(--foreground);
     margin-top: 1.75em;
     margin-bottom: 0.4em;
+    scroll-margin-top: 7rem;
   }
   .prose-custom p {
     color: var(--muted-foreground);
@@ -242,6 +256,10 @@
   .prose-custom ul, .prose-custom ol {
     padding-left: 1.4em;
   }
+  .prose-custom ul > li,
+  .prose-custom ol > li {
+    padding-left: 0.2em;
+  }
   .prose-custom ul { list-style: disc; }
   .prose-custom ol { list-style: decimal; }
   .prose-custom li {
@@ -258,6 +276,12 @@
     font-style: italic;
     font-size: 1.25rem;
     line-height: 1.5;
+    background: color-mix(in oklab, var(--surface) 80%, transparent);
+    border-radius: 0 1rem 1rem 0;
+    padding-block: 0.2em;
+  }
+  .prose-custom blockquote p {
+    color: inherit;
   }
   .prose-custom code {
     font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -289,6 +313,8 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.95rem;
+    display: block;
+    overflow-x: auto;
   }
   .prose-custom th, .prose-custom td {
     text-align: left;
@@ -307,5 +333,18 @@
     border-top: 1px solid var(--hairline);
     margin: 2em 0;
   }
+  .prose-custom img {
+    width: 100%;
+    border-radius: 1.25rem;
+    border: 1px solid var(--hairline);
+  }
+  .prose-custom figure {
+    margin: 2em 0;
+  }
+  .prose-custom figcaption {
+    margin-top: 0.75em;
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    text-align: center;
+  }
 }
-

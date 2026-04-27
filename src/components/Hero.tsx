@@ -1,8 +1,11 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import portrait from "@/assets/portrait.jpg";
+import { writingEntries } from "@/lib/content";
 
 export function Hero() {
+  const latestWriting = writingEntries[0];
+
   return (
     <section id="top" className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-12 px-6 md:grid-cols-12">
@@ -54,12 +57,22 @@ export function Hero() {
               查看课程
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
-            <Link
-              to="/writing"
-              className="inline-flex items-center gap-2 rounded-full border border-hairline px-5 py-3 text-sm text-foreground transition-colors hover:bg-surface"
-            >
-              阅读最新文章
-            </Link>
+            {latestWriting ? (
+              <Link
+                to="/writing/$slug"
+                params={{ slug: latestWriting.meta.slug }}
+                className="inline-flex items-center gap-2 rounded-full border border-hairline px-5 py-3 text-sm text-foreground transition-colors hover:bg-surface"
+              >
+                阅读最新文章
+              </Link>
+            ) : (
+              <Link
+                to="/writing"
+                className="inline-flex items-center gap-2 rounded-full border border-hairline px-5 py-3 text-sm text-foreground transition-colors hover:bg-surface"
+              >
+                浏览文章列表
+              </Link>
+            )}
           </motion.div>
 
           <motion.div
