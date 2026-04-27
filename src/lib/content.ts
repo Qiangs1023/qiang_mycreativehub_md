@@ -174,10 +174,17 @@ const coursesModules = import.meta.glob("../content/courses/*.md", {
   eager: true,
 }) as Record<string, string>;
 
+const aboutModules = import.meta.glob("../content/about/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
 export const workEntries = loadCollection(workModules);
 export const writingEntries = loadCollection(writingModules);
 export const videosEntries = loadCollection(videosModules);
 export const coursesEntries = loadCollection(coursesModules);
+export const aboutEntries = loadCollection(aboutModules);
 
 export function findEntry(
   collection: ContentEntry[],

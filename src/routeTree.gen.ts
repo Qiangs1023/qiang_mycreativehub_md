@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WritingRouteImport } from './routes/writing'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as VideosRouteImport } from './routes/videos'
+import { Route as NewsRouteImport } from './routes/news'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -45,6 +46,11 @@ const WorkRoute = WorkRouteImport.update({
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
   path: '/videos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsRoute = NewsRouteImport.update({
+  id: '/news',
+  path: '/news',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
+  '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -223,6 +232,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/courses'
+    | '/news'
     | '/videos'
     | '/work'
     | '/writing'
@@ -246,6 +256,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/courses'
+    | '/news'
     | '/videos'
     | '/work'
     | '/writing'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/auth'
     | '/courses'
+    | '/news'
     | '/videos'
     | '/work'
     | '/writing'
@@ -295,6 +307,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AuthRoute: typeof AuthRoute
   CoursesRoute: typeof CoursesRouteWithChildren
+  NewsRoute: typeof NewsRoute
   VideosRoute: typeof VideosRouteWithChildren
   WorkRoute: typeof WorkRouteWithChildren
   WritingRoute: typeof WritingRouteWithChildren
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/videos'
       fullPath: '/videos'
       preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/news': {
+      id: '/news'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof NewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -536,6 +556,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AuthRoute: AuthRoute,
   CoursesRoute: CoursesRouteWithChildren,
+  NewsRoute: NewsRoute,
   VideosRoute: VideosRouteWithChildren,
   WorkRoute: WorkRouteWithChildren,
   WritingRoute: WritingRouteWithChildren,

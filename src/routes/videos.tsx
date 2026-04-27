@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Videos } from "@/components/Videos";
 import { Footer } from "@/components/Footer";
@@ -23,10 +23,12 @@ export const Route = createFileRoute("/videos")({
 });
 
 function VideosPage() {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isVideoIndex = pathname === "/videos";
   return (
     <main className="relative min-h-screen pt-20">
       <Nav />
-      <Videos showAction={false} />
+      {isVideoIndex ? <Videos showAction={false} /> : <Outlet />}
       <Footer />
     </main>
   );

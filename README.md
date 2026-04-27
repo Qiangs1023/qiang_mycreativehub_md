@@ -26,6 +26,8 @@
 - `src/content/writing/` - 博客文章
 - `src/content/videos/` - 视频内容
 - `src/content/courses/` - 课程展示
+- `src/content/about/` - 关于页面（单文件 `about.md`）
+- `src/content/news/` - AI 资讯（RSS 自动拉取，无需手动编辑）
 
 ### 1. 发布一篇文章 (Writing)
 
@@ -60,6 +62,138 @@ cta: "立即购买 ↗"
 ```
 *当配置了 `link` 字段后，前端页面上的按钮将自动变为外部跳转链接，指向你的课程销售系统。*
 
+### 3. 修改关于页面 (About)
+
+在 `src/content/about/about.md` 中编辑页面正文内容：
+
+```markdown
+---
+title: "关于页面标题"
+excerpt: "页面简介..."
+---
+
+## 第一段标题
+
+正文内容，支持 **Markdown** 语法...
+
+## 第二段标题
+
+更多内容...
+```
+
+> 注意：About 页面的左侧区域（Toolbox 技术栈标签）和右侧区域（订阅表单、社交链接）由 React 组件控制，如需修改这些部分请直接编辑 `src/routes/about.tsx`。
+
+### 4. AI 资讯页面 (News)
+
+News 页面会自动从订阅源拉取内容，无需手动维护：
+
+- **订阅源**：`https://ai.hubtoday.app/blog/index.xml`（何夕2077的 AI 资讯）
+- **数据文件**：`src/content/news/rss-data.json`（由脚本自动生成）
+- **更新时间**：每次构建时自动拉取最新内容；GitHub Actions 每日凌晨 3:30 自动构建并部署
+
+**手动触发更新**
+
+```bash
+npm run fetch-rss
+```
+
+**修改订阅源**
+
+编辑 `scripts/fetch-rss.mjs`，修改顶部的 `RSS_URL` 变量：
+
+```js
+const RSS_URL = "https://你的订阅源地址/index.xml";
+```
+
+然后运行：
+
+```bash
+npm run fetch-rss
+npm run build
+```
+
+---
+
+## 📬 邮箱订阅功能 (Buttondown)
+
+本项目使用 [Buttondown](https://buttondown.email) 实现 newsletter 订阅功能，完美适配纯静态部署的 GitHub Pages。
+
+### 为什么选择 Buttondown
+
+- **零后端**：不需要任何服务器，完全依赖 Buttondown 处理订阅逻辑
+- **免费额度**：支持最多 100 名订阅者，适合独立创作者起步
+- **嵌入简单**：只需一个 `<form>` 或加载一段 JS 代码
+- **完整功能**：订阅确认邮件、群发、退订管理全部内置
+
+### 工作原理
+
+```
+用户填写邮箱 → 提交到 Buttondown API
+       ↓
+Buttondown 发送确认邮件给用户
+       ↓
+用户点击确认链接 → 订阅成功
+       ↓
+你在 Buttondown 写文章 → 一键群发给所有订阅者
+```
+
+### 如何启用
+
+**1. 注册 Buttondown**
+
+前往 [buttondown.email](https://buttondown.email) 注册免费账号。
+
+**2. 获取你的订阅入口 URL**
+
+注册后在「Settings」中找到你的订阅者入口 URL，格式为：
+```
+https://buttondown.email/你的用户名
+```
+
+**3. 在站点中嵌入订阅表单**
+
+在 `src/components/Nav.tsx` 中，将“订阅”按钮替换为 Buttondown 订阅表单。参考以下代码结构：
+
+```tsx
+// src/components/SubscribeForm.tsx
+export function SubscribeForm() {
+  return (
+    <form
+      action="https://buttondown.email/api/emails/embed-subscribe/你的用户名"
+      method="post"
+      target="popup"
+      onSubmit={() => window.open('https://buttondown.email/你的用户名', 'popup', 'width=600,height=600')}
+    >
+      <input
+        type="email"
+        name="email"
+        placeholder="输入邮箱地址"
+        required
+        className="rounded-full border border-hairline bg-background px-4 py-2 text-sm"
+      />
+      <button
+        type="submit"
+        className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+      >
+        订阅
+      </button>
+    </form>
+  );
+}
+```
+
+然后在 `Nav.tsx` 的订阅按钮位置引入：
+```tsx
+import { SubscribeForm } from "@/components/SubscribeForm";
+
+// 将原来的 Link 替换为 SubscribeForm
+<SubscribeForm />
+```
+
+**4. 发布内容**
+
+在 Buttondown 的编辑器中撰写 newsletter，点击「Send」即可群发给所有订阅者。
+
 ---
 
 ## 🛠 本地开发与构建
@@ -86,5 +220,6 @@ npm run build
 
 1. 在你的 GitHub 仓库中，进入 **Settings** -> **Pages**。
 2. 将 **Source** 设置为 `GitHub Actions`。
-3. 项目根目录创建 `.github/workflows/deploy.yml` 配置自动打包并发布 `dist` 目录。
-4. 每次 `git push` 后，网站就会自动更新！
+3. 项目根目录已包含 `.github/workflows/deploy.yml`，无需额外创建。
+4. 每次 `git push` 后，网站会自动构建并发布到 GitHub Pages。
+5. 同时，GitHub Actions 每天凌晨 3:30 会自动触发构建，无需推送也能保持 RSS 内容最新。
