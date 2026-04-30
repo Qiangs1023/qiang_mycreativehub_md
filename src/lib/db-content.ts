@@ -6,6 +6,18 @@ export type WritingRow = Database["public"]["Tables"]["writing"]["Row"];
 export type VideoRow = Database["public"]["Tables"]["videos"]["Row"];
 export type CourseRow = Database["public"]["Tables"]["courses"]["Row"];
 
+export type AboutRow = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  content: string | null;
+  cover_url: string | null;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export async function fetchWork(): Promise<WorkRow[]> {
   const { data, error } = await supabase
     .from("work")
@@ -34,11 +46,7 @@ export async function fetchWriting(): Promise<WritingRow[]> {
 }
 
 export async function fetchWritingBySlug(slug: string): Promise<WritingRow | null> {
-  const { data, error } = await supabase
-    .from("writing")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
+  const { data, error } = await supabase.from("writing").select("*").eq("slug", slug).maybeSingle();
   if (error) throw error;
   return data;
 }
@@ -107,4 +115,17 @@ export function formatPrice(cents: number, currency: string) {
   if (currency === "CNY") return `¥${v}`;
   if (currency === "USD") return `$${v}`;
   return `${v} ${currency}`;
+}
+
+export async function fetchAbout(): Promise<AboutRow | null> {
+  const { data, error } = await supabase
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .from("about" as any)
+    .select("*")
+    .eq("published", true)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data as unknown as AboutRow | null;
 }

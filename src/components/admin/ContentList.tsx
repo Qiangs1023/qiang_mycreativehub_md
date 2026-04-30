@@ -3,6 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
+type ContentTable = "work" | "writing" | "videos" | "courses" | "about";
+type ContentEditBase =
+  | "/admin/work"
+  | "/admin/writing"
+  | "/admin/videos"
+  | "/admin/courses"
+  | "/admin/about";
+
 type AnyRow = {
   id: string;
   slug: string;
@@ -17,8 +25,8 @@ export function ContentList({
   title,
   newLabel = "新建",
 }: {
-  table: "work" | "writing" | "videos" | "courses";
-  editBase: "/admin/work" | "/admin/writing" | "/admin/videos" | "/admin/courses";
+  table: ContentTable;
+  editBase: ContentEditBase;
   title: string;
   newLabel?: string;
 }) {
@@ -33,17 +41,19 @@ export function ContentList({
   async function load() {
     setLoading(true);
     const { data, error } = await supabase
-      .from(table)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .from(table as any)
       .select("id,slug,title,published,updated_at")
       .order("updated_at", { ascending: false });
     if (error) toast.error(error.message);
-    setRows((data as AnyRow[]) ?? []);
+    setRows((data as unknown as AnyRow[]) ?? []);
     setLoading(false);
   }
 
   async function handleDelete(id: string) {
     if (!confirm("确定删除这一条？此操作不可撤销。")) return;
-    const { error } = await supabase.from(table).delete().eq("id", id);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await supabase.from(table as any).delete().eq("id", id);
     if (error) {
       toast.error(error.message);
     } else {
@@ -53,8 +63,9 @@ export function ContentList({
   }
 
   async function handleTogglePublished(row: AnyRow) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase
-      .from(table)
+      .from(table as any)
       .update({ published: !row.published })
       .eq("id", row.id);
     if (error) toast.error(error.message);

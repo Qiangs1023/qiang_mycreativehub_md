@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { FileUpload } from "./FileUpload";
+import { AiAssistant } from "./AiAssistant";
 
 type FieldType = "text" | "textarea" | "markdown" | "url" | "number" | "tags" | "image" | "video";
 
@@ -14,6 +15,14 @@ export type FieldDef = {
   placeholder?: string;
 };
 
+type ContentTable = "work" | "writing" | "videos" | "courses" | "about";
+type ContentListPath =
+  | "/admin/work"
+  | "/admin/writing"
+  | "/admin/videos"
+  | "/admin/courses"
+  | "/admin/about";
+
 export function ContentEditor({
   table,
   id,
@@ -21,18 +30,26 @@ export function ContentEditor({
   listPath,
   title,
 }: {
-  table: "work" | "writing" | "videos" | "courses";
+  table: ContentTable;
   id: string;
   fields: FieldDef[];
-  listPath: "/admin/work" | "/admin/writing" | "/admin/videos" | "/admin/courses";
+  listPath: ContentListPath;
   title: string;
 }) {
   const isNew = id === "new";
   const navigate = useNavigate();
   const [loading, setLoading] = useState(!isNew);
   const [busy, setBusy] = useState(false);
+  const [showAi, setShowAi] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [form, setForm] = useState<Record<string, any>>(() => initialFromFields(fields));
+
+  const aiType = table === "videos" ? "video_script" : "article";
+
+  const handleAiInsert = (markdown: string) => {
+    const existing = (form.content as string) || "";
+    update("content", existing ? existing + "\n\n" + markdown : markdown);
+  };
 
   useEffect(() => {
     if (isNew) return;
@@ -41,11 +58,16 @@ export function ContentEditor({
   }, [id, table]);
 
   async function load() {
-    const { data, error } = await supabase.from(table).select("*").eq("id", id).maybeSingle();
+    const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .from(table as any)
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
     if (error) {
       toast.error(error.message);
     } else if (data) {
-      setForm(data);
+      setForm(data as unknown as Record<string, unknown>);
     }
     setLoading(false);
   }
@@ -55,7 +77,6 @@ export function ContentEditor({
   }
 
   async function handleSave() {
-    // Validate required
     for (const f of fields) {
       if (f.required && !form[f.name]) {
         toast.error(`请填写「${f.label}」`);
@@ -64,7 +85,6 @@ export function ContentEditor({
     }
     setBusy(true);
     try {
-      // Slug auto from title if empty
       const payload = { ...form };
       if (!payload.slug && payload.title) {
         payload.slug = String(payload.title)
@@ -72,26 +92,34 @@ export function ContentEditor({
           .replace(/[^\w\u4e00-\u9fa5]+/g, "-")
           .replace(/^-|-$/g, "");
       }
-      // Coerce numbers
       for (const f of fields) {
         if (f.type === "number" && payload[f.name] !== undefined && payload[f.name] !== null) {
           payload[f.name] = Number(payload[f.name]);
         }
       }
-      // strip non-column fields just in case
       delete payload.id;
       delete payload.created_at;
       delete payload.updated_at;
 
       if (isNew) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { data, error } = await supabase.from(table).insert(payload as any).select("id").single();
+        const { data, error } = await supabase
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .from(table as any)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .insert(payload as any)
+          .select("id")
+          .single();
         if (error) throw error;
         toast.success("已创建");
-        navigate({ to: `${listPath}/$id`, params: { id: data.id } });
-      } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const { error } = await supabase.from(table).update(payload as any).eq("id", id);
+        navigate({ to: `${listPath}/$id`, params: { id: (data as any).id } } as any);
+      } else {
+        const { error } = await supabase
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .from(table as any)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          .update(payload as any)
+          .eq("id", id);
         if (error) throw error;
         toast.success("已保存");
       }
@@ -105,48 +133,78 @@ export function ContentEditor({
   if (loading) return <div className="text-sm text-muted-foreground">加载中…</div>;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-3xl font-light tracking-tight">
-            {isNew ? `新建${title}` : `编辑${title}`}
-          </h1>
+    <div className="flex gap-6">
+      <div className={`min-w-0 space-y-6 ${showAi ? "flex-1" : "w-full"}`}>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-display text-3xl font-light tracking-tight">
+              {isNew ? `新建${title}` : `编辑${title}`}
+            </h1>
+          </div>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowAi(!showAi)}
+              className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                showAi
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-hairline text-muted-foreground hover:bg-surface hover:text-foreground"
+              }`}
+            >
+              AI 助手
+            </button>
+            <button
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onClick={() => navigate({ to: listPath as any })}
+              className="rounded-md border border-hairline px-3 py-1.5 text-sm hover:bg-surface"
+            >
+              取消
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={busy}
+              className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
+            >
+              {busy ? "保存中…" : "保存"}
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate({ to: listPath })}
-            className="rounded-md border border-hairline px-3 py-1.5 text-sm hover:bg-surface"
-          >
-            取消
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={busy}
-            className="rounded-md bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
-          >
-            {busy ? "保存中…" : "保存"}
-          </button>
+
+        <div className="space-y-5 rounded-xl border border-hairline bg-surface/30 p-6">
+          {fields.map((f) => (
+            <Field
+              key={f.name}
+              field={f}
+              value={form[f.name]}
+              onChange={(v) => update(f.name, v)}
+            />
+          ))}
+
+          <div className="flex items-center gap-2 border-t border-hairline pt-5">
+            <input
+              id="published"
+              type="checkbox"
+              checked={form.published ?? true}
+              onChange={(e) => update("published", e.target.checked)}
+              className="h-4 w-4"
+            />
+            <label htmlFor="published" className="text-sm">
+              已发布（取消勾选则保存为草稿）
+            </label>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-5 rounded-xl border border-hairline bg-surface/30 p-6">
-        {fields.map((f) => (
-          <Field key={f.name} field={f} value={form[f.name]} onChange={(v) => update(f.name, v)} />
-        ))}
-
-        <div className="flex items-center gap-2 border-t border-hairline pt-5">
-          <input
-            id="published"
-            type="checkbox"
-            checked={form.published ?? true}
-            onChange={(e) => update("published", e.target.checked)}
-            className="h-4 w-4"
-          />
-          <label htmlFor="published" className="text-sm">
-            已发布（取消勾选则保存为草稿）
-          </label>
+      {showAi && (
+        <div className="sticky top-6 w-96 shrink-0 self-start rounded-xl border border-hairline bg-surface/30">
+          <div className="h-[calc(100vh-8rem)]">
+            <AiAssistant
+              contentType={aiType}
+              onInsert={handleAiInsert}
+              onClose={() => setShowAi(false)}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -63,13 +63,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const client = getSupabaseClient();
     if (!client) return;
 
-    const { data } = await client
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    setIsAdmin(!!data);
+    // Primary: check JWT app_metadata role via getUser() (always available in the token)
+    try {
+      const { data: userData } = await client.auth.getUser();
+      const appMetaRole = (userData?.user as any)?.app_metadata?.role;
+      if (appMetaRole === "admin") {
+        setIsAdmin(true);
+        return;
+      }
+      // Also check top-level role claim in JWT
+      const topRole = (userData?.user as any)?.role;
+      if (topRole === "admin") {
+        setIsAdmin(true);
+        return;
+      }
+    } catch (_) {
+      // getUser failed — continue to DB check
+    }
+
+    // Secondary: check user_roles table (may fail due to PostgREST schema cache issues)
+    try {
+      const { data } = await client
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (data) {
+        setIsAdmin(true);
+        return;
+      }
+    } catch (_) {
+      // DB query failed — fall through
+    }
+
+    setIsAdmin(false);
   }
 
   async function signOut() {

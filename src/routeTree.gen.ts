@@ -28,10 +28,12 @@ import { Route as AdminWorkIndexRouteImport } from './routes/admin.work.index'
 import { Route as AdminVideosIndexRouteImport } from './routes/admin.videos.index'
 import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
+import { Route as AdminAboutIndexRouteImport } from './routes/admin.about.index'
 import { Route as AdminWritingIdRouteImport } from './routes/admin.writing.$id'
 import { Route as AdminWorkIdRouteImport } from './routes/admin.work.$id'
 import { Route as AdminVideosIdRouteImport } from './routes/admin.videos.$id'
 import { Route as AdminCoursesIdRouteImport } from './routes/admin.courses.$id'
+import { Route as AdminAboutIdRouteImport } from './routes/admin.about.$id'
 
 const WritingRoute = WritingRouteImport.update({
   id: '/writing',
@@ -128,6 +130,11 @@ const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAboutIndexRoute = AdminAboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminWritingIdRoute = AdminWritingIdRouteImport.update({
   id: '/writing/$id',
   path: '/writing/$id',
@@ -148,6 +155,11 @@ const AdminCoursesIdRoute = AdminCoursesIdRouteImport.update({
   path: '/courses/$id',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAboutIdRoute = AdminAboutIdRouteImport.update({
+  id: '/about/$id',
+  path: '/about/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -164,10 +176,12 @@ export interface FileRoutesByFullPath {
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/about/$id': typeof AdminAboutIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
   '/admin/videos/$id': typeof AdminVideosIdRoute
   '/admin/work/$id': typeof AdminWorkIdRoute
   '/admin/writing/$id': typeof AdminWritingIdRoute
+  '/admin/about/': typeof AdminAboutIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/admin/videos/': typeof AdminVideosIndexRoute
@@ -188,10 +202,12 @@ export interface FileRoutesByTo {
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/admin/about/$id': typeof AdminAboutIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
   '/admin/videos/$id': typeof AdminVideosIdRoute
   '/admin/work/$id': typeof AdminWorkIdRoute
   '/admin/writing/$id': typeof AdminWritingIdRoute
+  '/admin/about': typeof AdminAboutIndexRoute
   '/admin/courses': typeof AdminCoursesIndexRoute
   '/admin/users': typeof AdminUsersIndexRoute
   '/admin/videos': typeof AdminVideosIndexRoute
@@ -214,10 +230,12 @@ export interface FileRoutesById {
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/admin/about/$id': typeof AdminAboutIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
   '/admin/videos/$id': typeof AdminVideosIdRoute
   '/admin/work/$id': typeof AdminWorkIdRoute
   '/admin/writing/$id': typeof AdminWritingIdRoute
+  '/admin/about/': typeof AdminAboutIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/users/': typeof AdminUsersIndexRoute
   '/admin/videos/': typeof AdminVideosIndexRoute
@@ -241,10 +259,12 @@ export interface FileRouteTypes {
     | '/work/$slug'
     | '/writing/$slug'
     | '/admin/'
+    | '/admin/about/$id'
     | '/admin/courses/$id'
     | '/admin/videos/$id'
     | '/admin/work/$id'
     | '/admin/writing/$id'
+    | '/admin/about/'
     | '/admin/courses/'
     | '/admin/users/'
     | '/admin/videos/'
@@ -265,10 +285,12 @@ export interface FileRouteTypes {
     | '/work/$slug'
     | '/writing/$slug'
     | '/admin'
+    | '/admin/about/$id'
     | '/admin/courses/$id'
     | '/admin/videos/$id'
     | '/admin/work/$id'
     | '/admin/writing/$id'
+    | '/admin/about'
     | '/admin/courses'
     | '/admin/users'
     | '/admin/videos'
@@ -290,10 +312,12 @@ export interface FileRouteTypes {
     | '/work/$slug'
     | '/writing/$slug'
     | '/admin/'
+    | '/admin/about/$id'
     | '/admin/courses/$id'
     | '/admin/videos/$id'
     | '/admin/work/$id'
     | '/admin/writing/$id'
+    | '/admin/about/'
     | '/admin/courses/'
     | '/admin/users/'
     | '/admin/videos/'
@@ -448,6 +472,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoursesIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/about/': {
+      id: '/admin/about/'
+      path: '/about'
+      fullPath: '/admin/about/'
+      preLoaderRoute: typeof AdminAboutIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/writing/$id': {
       id: '/admin/writing/$id'
       path: '/writing/$id'
@@ -476,15 +507,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCoursesIdRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/about/$id': {
+      id: '/admin/about/$id'
+      path: '/about/$id'
+      fullPath: '/admin/about/$id'
+      preLoaderRoute: typeof AdminAboutIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminAboutIdRoute: typeof AdminAboutIdRoute
   AdminCoursesIdRoute: typeof AdminCoursesIdRoute
   AdminVideosIdRoute: typeof AdminVideosIdRoute
   AdminWorkIdRoute: typeof AdminWorkIdRoute
   AdminWritingIdRoute: typeof AdminWritingIdRoute
+  AdminAboutIndexRoute: typeof AdminAboutIndexRoute
   AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
   AdminUsersIndexRoute: typeof AdminUsersIndexRoute
   AdminVideosIndexRoute: typeof AdminVideosIndexRoute
@@ -494,10 +534,12 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminAboutIdRoute: AdminAboutIdRoute,
   AdminCoursesIdRoute: AdminCoursesIdRoute,
   AdminVideosIdRoute: AdminVideosIdRoute,
   AdminWorkIdRoute: AdminWorkIdRoute,
   AdminWritingIdRoute: AdminWritingIdRoute,
+  AdminAboutIndexRoute: AdminAboutIndexRoute,
   AdminCoursesIndexRoute: AdminCoursesIndexRoute,
   AdminUsersIndexRoute: AdminUsersIndexRoute,
   AdminVideosIndexRoute: AdminVideosIndexRoute,

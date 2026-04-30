@@ -4,10 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [
-      { title: "管理后台 — 数字旷野" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "管理后台 — 数字旷野" }, { name: "robots", content: "noindex" }],
   }),
   component: AdminLayout,
 });
@@ -18,6 +15,7 @@ const navItems = [
   { to: "/admin/writing" as const, label: "文章" },
   { to: "/admin/videos" as const, label: "视频" },
   { to: "/admin/courses" as const, label: "课程" },
+  { to: "/admin/about" as const, label: "关于" },
   { to: "/admin/users" as const, label: "用户" },
 ];
 
@@ -86,7 +84,8 @@ function AdminLayout() {
             return (
               <Link
                 key={item.to}
-                to={item.to}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                to={item.to as any}
                 className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
                   isActive
                     ? "bg-primary/10 text-primary"
@@ -115,9 +114,13 @@ function AdminLayout() {
           {navItems.map((item) => (
             <Link
               key={item.to}
-              to={item.to}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              to={item.to as any}
               className="whitespace-nowrap rounded-md px-3 py-1 text-xs text-muted-foreground hover:text-foreground"
-              activeProps={{ className: "whitespace-nowrap rounded-md px-3 py-1 text-xs text-primary bg-primary/10" }}
+              activeProps={{
+                className:
+                  "whitespace-nowrap rounded-md px-3 py-1 text-xs text-primary bg-primary/10",
+              }}
             >
               {item.label}
             </Link>

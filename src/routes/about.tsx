@@ -1,8 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { marked } from "marked";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Prose } from "@/components/Prose";
 import { aboutEntries } from "@/lib/content";
+import { fetchAbout } from "@/lib/db-content";
+import { isSupabaseConfigured } from "@/integrations/supabase/client";
+
+marked.setOptions({ gfm: true, breaks: false });
 
 const stack = [
   "TypeScript",
@@ -17,17 +22,44 @@ const stack = [
 ];
 
 export const Route = createFileRoute("/about")({
-  loader: () => {
-    return aboutEntries[0] ?? null;
+  loader: async () => {
+    if (isSupabaseConfigured) {
+      try {
+        const dbEntry = await fetchAbout();
+        if (dbEntry && dbEntry.content) {
+          const html = marked.parse(dbEntry.content) as string;
+          return {
+            html,
+            meta: {
+              title: dbEntry.title,
+              excerpt: dbEntry.excerpt ?? undefined,
+            },
+          };
+        }
+      } catch {
+        // fall back to markdown
+      }
+    }
+    const fallback = aboutEntries[0];
+    if (fallback) {
+      return { html: fallback.html, meta: { ...fallback.meta } };
+    }
+    return null;
   },
   head: ({ loaderData }) => {
     const m = loaderData?.meta;
     return {
       meta: [
-        { title: m ? `${m.title}` : "About — 关于数字旷野" },
-        { name: "description", content: m?.excerpt ?? "我是数字旷野 — 2019 年从大厂离职，一个人做产品、写文章、录视频。" },
+        { title: m?.title ? `${m.title}` : "About — 关于数字旷野" },
+        {
+          name: "description",
+          content: m?.excerpt ?? "我是数字旷野 — 2019 年从大厂离职，一个人做产品、写文章、录视频。",
+        },
         { property: "og:title", content: "About — 关于数字旷野" },
-        { property: "og:description", content: "一个人，一台电脑，一段还在继续的旅程。" },
+        {
+          property: "og:description",
+          content: "一个人，一台电脑，一段还在继续的旅程。",
+        },
       ],
     };
   },
@@ -35,7 +67,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const entry = Route.useLoaderData();
+  const data = Route.useLoaderData();
 
   return (
     <main className="relative min-h-screen pt-20">
@@ -53,8 +85,8 @@ function AboutPage() {
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
           <div className="md:col-span-7">
-            {entry ? (
-              <Prose html={entry.html} />
+            {data ? (
+              <Prose html={data.html} />
             ) : (
               <p className="text-base leading-relaxed text-muted-foreground">
                 暂无内容，请编辑 src/content/about/about.md 添加。
@@ -111,7 +143,7 @@ function AboutPage() {
                   </button>
                 </form>
 
-                <div className="mt-6 hairline-t border-t border-hairline pt-5">
+                <div className="mt-6 hairline-t pt-5">
                   <div className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
                     在别处找到我
                   </div>
@@ -120,9 +152,9 @@ function AboutPage() {
                       <a
                         key={s}
                         href="#"
-                        className="text-foreground transition-colors hover:text-primary"
+                        className="text-muted-foreground underline underline-offset-4 transition-colors hover:text-primary"
                       >
-                        {s} →
+                        {s}
                       </a>
                     ))}
                   </div>
