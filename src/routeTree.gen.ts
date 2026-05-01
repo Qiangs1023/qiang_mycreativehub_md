@@ -14,26 +14,12 @@ import { Route as WorkRouteImport } from './routes/work'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as CoursesRouteImport } from './routes/courses'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as WritingSlugRouteImport } from './routes/writing.$slug'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as VideosSlugRouteImport } from './routes/videos.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
-import { Route as AdminWritingIndexRouteImport } from './routes/admin.writing.index'
-import { Route as AdminWorkIndexRouteImport } from './routes/admin.work.index'
-import { Route as AdminVideosIndexRouteImport } from './routes/admin.videos.index'
-import { Route as AdminUsersIndexRouteImport } from './routes/admin.users.index'
-import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
-import { Route as AdminAboutIndexRouteImport } from './routes/admin.about.index'
-import { Route as AdminWritingIdRouteImport } from './routes/admin.writing.$id'
-import { Route as AdminWorkIdRouteImport } from './routes/admin.work.$id'
-import { Route as AdminVideosIdRouteImport } from './routes/admin.videos.$id'
-import { Route as AdminCoursesIdRouteImport } from './routes/admin.courses.$id'
-import { Route as AdminAboutIdRouteImport } from './routes/admin.about.$id'
 
 const WritingRoute = WritingRouteImport.update({
   id: '/writing',
@@ -60,16 +46,6 @@ const CoursesRoute = CoursesRouteImport.update({
   path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -79,11 +55,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
 } as any)
 const WritingSlugRoute = WritingSlugRouteImport.update({
   id: '/$slug',
@@ -105,67 +76,10 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => CoursesRoute,
 } as any)
-const AdminWritingIndexRoute = AdminWritingIndexRouteImport.update({
-  id: '/writing/',
-  path: '/writing/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWorkIndexRoute = AdminWorkIndexRouteImport.update({
-  id: '/work/',
-  path: '/work/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminVideosIndexRoute = AdminVideosIndexRouteImport.update({
-  id: '/videos/',
-  path: '/videos/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
-  id: '/courses/',
-  path: '/courses/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAboutIndexRoute = AdminAboutIndexRouteImport.update({
-  id: '/about/',
-  path: '/about/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWritingIdRoute = AdminWritingIdRouteImport.update({
-  id: '/writing/$id',
-  path: '/writing/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWorkIdRoute = AdminWorkIdRouteImport.update({
-  id: '/work/$id',
-  path: '/work/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminVideosIdRoute = AdminVideosIdRouteImport.update({
-  id: '/videos/$id',
-  path: '/videos/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCoursesIdRoute = AdminCoursesIdRouteImport.update({
-  id: '/courses/$id',
-  path: '/courses/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAboutIdRoute = AdminAboutIdRouteImport.update({
-  id: '/about/$id',
-  path: '/about/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
@@ -175,23 +89,10 @@ export interface FileRoutesByFullPath {
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/about/$id': typeof AdminAboutIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/videos/$id': typeof AdminVideosIdRoute
-  '/admin/work/$id': typeof AdminWorkIdRoute
-  '/admin/writing/$id': typeof AdminWritingIdRoute
-  '/admin/about/': typeof AdminAboutIndexRoute
-  '/admin/courses/': typeof AdminCoursesIndexRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
-  '/admin/videos/': typeof AdminVideosIndexRoute
-  '/admin/work/': typeof AdminWorkIndexRoute
-  '/admin/writing/': typeof AdminWritingIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
@@ -201,25 +102,11 @@ export interface FileRoutesByTo {
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
-  '/admin': typeof AdminIndexRoute
-  '/admin/about/$id': typeof AdminAboutIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/videos/$id': typeof AdminVideosIdRoute
-  '/admin/work/$id': typeof AdminWorkIdRoute
-  '/admin/writing/$id': typeof AdminWritingIdRoute
-  '/admin/about': typeof AdminAboutIndexRoute
-  '/admin/courses': typeof AdminCoursesIndexRoute
-  '/admin/users': typeof AdminUsersIndexRoute
-  '/admin/videos': typeof AdminVideosIndexRoute
-  '/admin/work': typeof AdminWorkIndexRoute
-  '/admin/writing': typeof AdminWritingIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/auth': typeof AuthRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
   '/videos': typeof VideosRouteWithChildren
@@ -229,26 +116,12 @@ export interface FileRoutesById {
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/about/$id': typeof AdminAboutIdRoute
-  '/admin/courses/$id': typeof AdminCoursesIdRoute
-  '/admin/videos/$id': typeof AdminVideosIdRoute
-  '/admin/work/$id': typeof AdminWorkIdRoute
-  '/admin/writing/$id': typeof AdminWritingIdRoute
-  '/admin/about/': typeof AdminAboutIndexRoute
-  '/admin/courses/': typeof AdminCoursesIndexRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
-  '/admin/videos/': typeof AdminVideosIndexRoute
-  '/admin/work/': typeof AdminWorkIndexRoute
-  '/admin/writing/': typeof AdminWritingIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/admin'
-    | '/auth'
     | '/courses'
     | '/news'
     | '/videos'
@@ -258,23 +131,10 @@ export interface FileRouteTypes {
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
-    | '/admin/'
-    | '/admin/about/$id'
-    | '/admin/courses/$id'
-    | '/admin/videos/$id'
-    | '/admin/work/$id'
-    | '/admin/writing/$id'
-    | '/admin/about/'
-    | '/admin/courses/'
-    | '/admin/users/'
-    | '/admin/videos/'
-    | '/admin/work/'
-    | '/admin/writing/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
-    | '/auth'
     | '/courses'
     | '/news'
     | '/videos'
@@ -284,24 +144,10 @@ export interface FileRouteTypes {
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
-    | '/admin'
-    | '/admin/about/$id'
-    | '/admin/courses/$id'
-    | '/admin/videos/$id'
-    | '/admin/work/$id'
-    | '/admin/writing/$id'
-    | '/admin/about'
-    | '/admin/courses'
-    | '/admin/users'
-    | '/admin/videos'
-    | '/admin/work'
-    | '/admin/writing'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/admin'
-    | '/auth'
     | '/courses'
     | '/news'
     | '/videos'
@@ -311,25 +157,11 @@ export interface FileRouteTypes {
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
-    | '/admin/'
-    | '/admin/about/$id'
-    | '/admin/courses/$id'
-    | '/admin/videos/$id'
-    | '/admin/work/$id'
-    | '/admin/writing/$id'
-    | '/admin/about/'
-    | '/admin/courses/'
-    | '/admin/users/'
-    | '/admin/videos/'
-    | '/admin/work/'
-    | '/admin/writing/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AuthRoute: typeof AuthRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   NewsRoute: typeof NewsRoute
   VideosRoute: typeof VideosRouteWithChildren
@@ -374,20 +206,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -401,13 +219,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
     }
     '/writing/$slug': {
       id: '/writing/$slug'
@@ -437,117 +248,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof CoursesRoute
     }
-    '/admin/writing/': {
-      id: '/admin/writing/'
-      path: '/writing'
-      fullPath: '/admin/writing/'
-      preLoaderRoute: typeof AdminWritingIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/work/': {
-      id: '/admin/work/'
-      path: '/work'
-      fullPath: '/admin/work/'
-      preLoaderRoute: typeof AdminWorkIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/videos/': {
-      id: '/admin/videos/'
-      path: '/videos'
-      fullPath: '/admin/videos/'
-      preLoaderRoute: typeof AdminVideosIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/users/': {
-      id: '/admin/users/'
-      path: '/users'
-      fullPath: '/admin/users/'
-      preLoaderRoute: typeof AdminUsersIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/courses/': {
-      id: '/admin/courses/'
-      path: '/courses'
-      fullPath: '/admin/courses/'
-      preLoaderRoute: typeof AdminCoursesIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/about/': {
-      id: '/admin/about/'
-      path: '/about'
-      fullPath: '/admin/about/'
-      preLoaderRoute: typeof AdminAboutIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/writing/$id': {
-      id: '/admin/writing/$id'
-      path: '/writing/$id'
-      fullPath: '/admin/writing/$id'
-      preLoaderRoute: typeof AdminWritingIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/work/$id': {
-      id: '/admin/work/$id'
-      path: '/work/$id'
-      fullPath: '/admin/work/$id'
-      preLoaderRoute: typeof AdminWorkIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/videos/$id': {
-      id: '/admin/videos/$id'
-      path: '/videos/$id'
-      fullPath: '/admin/videos/$id'
-      preLoaderRoute: typeof AdminVideosIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/courses/$id': {
-      id: '/admin/courses/$id'
-      path: '/courses/$id'
-      fullPath: '/admin/courses/$id'
-      preLoaderRoute: typeof AdminCoursesIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/about/$id': {
-      id: '/admin/about/$id'
-      path: '/about/$id'
-      fullPath: '/admin/about/$id'
-      preLoaderRoute: typeof AdminAboutIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
   }
 }
-
-interface AdminRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminAboutIdRoute: typeof AdminAboutIdRoute
-  AdminCoursesIdRoute: typeof AdminCoursesIdRoute
-  AdminVideosIdRoute: typeof AdminVideosIdRoute
-  AdminWorkIdRoute: typeof AdminWorkIdRoute
-  AdminWritingIdRoute: typeof AdminWritingIdRoute
-  AdminAboutIndexRoute: typeof AdminAboutIndexRoute
-  AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
-  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
-  AdminVideosIndexRoute: typeof AdminVideosIndexRoute
-  AdminWorkIndexRoute: typeof AdminWorkIndexRoute
-  AdminWritingIndexRoute: typeof AdminWritingIndexRoute
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminIndexRoute: AdminIndexRoute,
-  AdminAboutIdRoute: AdminAboutIdRoute,
-  AdminCoursesIdRoute: AdminCoursesIdRoute,
-  AdminVideosIdRoute: AdminVideosIdRoute,
-  AdminWorkIdRoute: AdminWorkIdRoute,
-  AdminWritingIdRoute: AdminWritingIdRoute,
-  AdminAboutIndexRoute: AdminAboutIndexRoute,
-  AdminCoursesIndexRoute: AdminCoursesIndexRoute,
-  AdminUsersIndexRoute: AdminUsersIndexRoute,
-  AdminVideosIndexRoute: AdminVideosIndexRoute,
-  AdminWorkIndexRoute: AdminWorkIndexRoute,
-  AdminWritingIndexRoute: AdminWritingIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface CoursesRouteChildren {
   CoursesSlugRoute: typeof CoursesSlugRoute
@@ -595,8 +297,6 @@ const WritingRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AuthRoute: AuthRoute,
   CoursesRoute: CoursesRouteWithChildren,
   NewsRoute: NewsRoute,
   VideosRoute: VideosRouteWithChildren,

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useAuth } from "@/lib/auth-context";
+import { Link } from "@tanstack/react-router";
 
 const links = [
   { to: "/work", label: "Work" },
@@ -13,8 +12,6 @@ const links = [
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
-  const { user, isAdmin, signOut } = useAuth();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,29 +47,6 @@ export function Nav() {
           ))}
         </nav>
         <div className="hidden items-center gap-2 md:flex">
-          {isAdmin && (
-            <Link
-              to="/admin"
-              className="rounded-full border border-hairline px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-surface hover:text-foreground"
-            >
-              后台
-            </Link>
-          )}
-          {user ? (
-            <button
-              onClick={() => signOut().then(() => navigate({ to: "/" }))}
-              className="rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-            >
-              退出
-            </button>
-          ) : (
-            <Link
-              to="/auth"
-              className="rounded-full px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground"
-            >
-              登录
-            </Link>
-          )}
           <Link
             to="/courses"
             className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
