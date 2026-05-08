@@ -4,7 +4,7 @@ import { workEntries } from "@/lib/content";
 import { resolveCover } from "@/lib/covers";
 
 export function Work({ showAction = true }: { showAction?: boolean } = {}) {
-  const items = workEntries;
+  const items = workEntries.slice(0, 6);
 
   return (
     <section id="work" className="relative py-24 md:py-32">

@@ -4,7 +4,7 @@ import { videosEntries } from "@/lib/content";
 import { resolveCover } from "@/lib/covers";
 
 export function Videos({ showAction = true }: { showAction?: boolean } = {}) {
-  const items = videosEntries;
+  const items = videosEntries.slice(0, 5);
 
   return (
     <section id="videos" className="relative py-24 md:py-32">
