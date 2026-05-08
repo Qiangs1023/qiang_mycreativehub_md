@@ -9,8 +9,8 @@ function formatDate(date?: string | null) {
   return `${y} · ${m}`;
 }
 
-export function Writing({ showAction = true }: { showAction?: boolean } = {}) {
-  const items = writingEntries.slice(0, 4);
+export function Writing({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
+  const items = limit ? writingEntries.slice(0, limit) : writingEntries;
 
   return (
     <section id="writing" className="relative border-y border-hairline bg-surface/30 py-24 md:py-32">

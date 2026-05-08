@@ -3,8 +3,8 @@ import { SectionHeader } from "./SectionHeader";
 import { videosEntries } from "@/lib/content";
 import { resolveCover } from "@/lib/covers";
 
-export function Videos({ showAction = true }: { showAction?: boolean } = {}) {
-  const items = videosEntries.slice(0, 5);
+export function Videos({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
+  const items = limit ? videosEntries.slice(0, limit) : videosEntries;
 
   return (
     <section id="videos" className="relative py-24 md:py-32">

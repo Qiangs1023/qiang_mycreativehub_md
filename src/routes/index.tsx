@@ -35,9 +35,9 @@ function Index() {
       <Hero />
       <Marquee />
 
-      <Writing />
-      <Work />
-      <Videos />
+      <Writing limit={4} />
+      <Work limit={6} />
+      <Videos limit={5} />
       <Courses />
 
       <Footer />
