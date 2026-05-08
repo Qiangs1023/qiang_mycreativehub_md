@@ -38,9 +38,9 @@ export function Courses({ limit }: { limit?: number } = {}) {
 
                 <div className="flex-1" />
 
-                {c.meta.link ? (
+                {c.meta.link || c.meta.url ? (
                   <a
-                    href={c.meta.link}
+                    href={c.meta.link || c.meta.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5 ${

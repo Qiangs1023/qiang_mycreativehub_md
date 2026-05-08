@@ -13,7 +13,7 @@ badge: 最受欢迎
 primary: true
 cta: 立即报名
 excerpt: Obsidian 是一款基于本地 Markdown 文件的双链笔记软件，更是你专属的“第二大脑”知识库。用Obsidian打造自己的人生管理系统
-url:
+url: https://qiang-mycreativehub-md.pages.dev/
 ---
 ## 这门课为谁
 
@@ -24,9 +24,7 @@ url:
 ## 课程介绍
 
 很多人初遇 Obsidian 会觉得“功能太多无从下手”，甚至陷入“插件收集癖”。
-
 本教程将：
-
 ✅ 从 `新建第一个 Vault` 到 `搭建个性化工作流` 全程拆解，零基础友好  
 ✅ 避开“功能堆砌陷阱”，聚焦真正提升效率的 20% 核心用法  
 ✅ 提供开箱即用的模板、Dataview 查询示例、自动化技巧与排版规范  

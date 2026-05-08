@@ -37,5 +37,8 @@ AI coding / 写作者 / 自媒体人
 
 谢谢你看到这里。
 
-联系我：
 Email： ky_info001@163.com
+
+知识星球：[数字旷野AIhub ](https://wx.zsxq.com/group/51115548528444)
+
+微信公众号：数字旷野 AI

@@ -24,6 +24,7 @@ export type ContentMeta = {
   badge?: string;
   primary?: boolean;
   cta?: string;
+  url?: string;
   /** Writing */
   readTime?: string;
 };
@@ -132,6 +133,7 @@ function buildEntry(slug: string, raw: string): ContentEntry {
     badge: data.badge as string | undefined,
     primary: data.primary as boolean | undefined,
     cta: data.cta as string | undefined,
+    url: data.url as string | undefined,
     readTime: data.readTime as string | undefined,
   };
   return { meta, html, body };

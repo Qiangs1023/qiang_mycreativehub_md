@@ -89,9 +89,9 @@ function CourseDetail() {
               </span>
             )}
           </div>
-          {meta.link ? (
+          {meta.link || meta.url ? (
             <a
-              href={meta.link}
+              href={meta.link || meta.url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -153,9 +153,9 @@ function CourseDetail() {
                 <div className="mt-1 font-mono text-xs text-muted-foreground">{meta.students}</div>
               )}
 
-              {meta.link ? (
+              {meta.link || meta.url ? (
                 <a
-                  href={meta.link}
+                  href={meta.link || meta.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
