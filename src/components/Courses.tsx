@@ -2,8 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./SectionHeader";
 import { coursesEntries } from "@/lib/content";
 
-export function Courses() {
-  const items = coursesEntries;
+export function Courses({ limit }: { limit?: number } = {}) {
+  const items = limit ? coursesEntries.slice(0, limit) : coursesEntries;
 
   return (
     <section id="courses" className="relative border-y border-hairline bg-surface/30 py-24 md:py-32">
