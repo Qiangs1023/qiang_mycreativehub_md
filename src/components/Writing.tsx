@@ -10,7 +10,7 @@ function formatDate(date?: string | null) {
 }
 
 export function Writing({ showAction = true }: { showAction?: boolean } = {}) {
-  const items = writingEntries;
+  const items = writingEntries.slice(0, 4);
 
   return (
     <section id="writing" className="relative border-y border-hairline bg-surface/30 py-24 md:py-32">

@@ -99,6 +99,7 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; body: s
     ) {
       value = value.slice(1, -1);
     }
+    value = value.trim();
     data[key] = value;
   }
 
