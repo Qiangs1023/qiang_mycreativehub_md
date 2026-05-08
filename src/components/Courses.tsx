@@ -38,32 +38,17 @@ export function Courses({ limit }: { limit?: number } = {}) {
 
                 <div className="flex-1" />
 
-                {c.meta.link || c.meta.url ? (
-                  <a
-                    href={c.meta.link || c.meta.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5 ${
-                      primary
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-hairline text-foreground hover:bg-surface-elevated"
-                    }`}
-                  >
-                    {c.meta.cta || "购买课程 ↗"}
-                  </a>
-                ) : (
-                  <Link
-                    to="/courses/$slug"
-                    params={{ slug: c.meta.slug }}
-                    className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5 ${
-                      primary
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-hairline text-foreground hover:bg-surface-elevated"
-                    }`}
-                  >
-                    查看详情 →
-                  </Link>
-                )}
+                <Link
+                  to="/courses/$slug"
+                  params={{ slug: c.meta.slug }}
+                  className={`mt-6 inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-medium transition-transform hover:-translate-y-0.5 ${
+                    primary
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-hairline text-foreground hover:bg-surface-elevated"
+                  }`}
+                >
+                  查看详情 →
+                </Link>
               </div>
             );
           })}
