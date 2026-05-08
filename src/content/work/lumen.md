@@ -1,11 +1,16 @@
 ---
 title: Lumen
 tag: SaaS · 进行中
-status: Beta · 邀请制
+status:
+  - 完成
 date: 2025-04-01
 excerpt: 为内容创作者打造的 AI 写作工作台。从灵感到发布，一个面板搞定。
 cover: project-1
-stack: [TypeScript, "Next.js", PostgreSQL, OpenAI]
+stack:
+  - TypeScript
+  - Next.js
+  - PostgreSQL
+  - OpenAI
 link: https://lumen.example.com
 ---
 
