@@ -109,9 +109,18 @@ function parseFrontmatter(raw: string): { data: Record<string, unknown>; body: s
 
 marked.setOptions({ gfm: true, breaks: false });
 
+function convertObsidianImages(html: string): string {
+  return html.replace(/!\[\[([^\]]+)\]\]/g, (_, path) => {
+    const filename = path.trim();
+    const src = filename.startsWith("/") ? filename : `/images/${filename}`;
+    const alt = filename.replace(/\.[^.]+$/, "");
+    return `<img src="${src}" alt="${alt}" />`;
+  });
+}
+
 function buildEntry(slug: string, raw: string): ContentEntry {
   const { data, body } = parseFrontmatter(raw);
-  const html = marked.parse(body) as string;
+  const html = convertObsidianImages(marked.parse(body) as string);
   const meta: ContentMeta = {
     slug,
     title: (data.title as string) ?? slug,
