@@ -4,7 +4,7 @@ platform: B站
 date: 2025-02-22
 duration: "18:30"
 views: 12 万播放
-cover: video-1
+cover: /images/video-1.jpg
 videoUrl: https://www.bilibili.com/video/example2
 excerpt: 全程录屏，没有快剪。看一个真实的 1-day MVP 是怎么做出来的。
 ---

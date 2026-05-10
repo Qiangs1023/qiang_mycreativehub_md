@@ -25,7 +25,7 @@ export function Work({ showAction = true, limit }: { showAction?: boolean; limit
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {items.map((p, i) => {
-            const img = p.meta.cover?.startsWith("http") ? p.meta.cover : resolveCover(p.meta.cover ?? undefined);
+            const img = resolveCover(p.meta.cover ?? undefined);
             const tag = p.meta.tag;
             return (
               <Link

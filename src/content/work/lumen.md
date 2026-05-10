@@ -5,7 +5,7 @@ status:
   - 完成
 date: 2025-04-01
 excerpt: 为内容创作者打造的 AI 写作工作台。从灵感到发布，一个面板搞定。
-cover: project-1
+cover: /images/project-1.jpg
 stack:
   - TypeScript
   - Next.js
