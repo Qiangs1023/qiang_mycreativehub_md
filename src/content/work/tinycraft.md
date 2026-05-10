@@ -4,7 +4,7 @@ tag: Open Source · 2.4k stars
 status: 持续维护
 date: 2023-09-01
 excerpt: 一个用于构建终端工具的轻量框架，被 30+ 个开源项目使用。
-cover: /images/project-3.jpg
+cover: project-3
 stack: [Go, CLI]
 link: https://github.com/example/tinycraft
 ---

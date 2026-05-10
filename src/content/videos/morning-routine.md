@@ -4,7 +4,7 @@ platform: YouTube
 date: 2025-03-12
 duration: "11:42"
 views: 8.4 万播放
-cover: /images/video-2.jpg
+cover: video-2
 videoUrl: https://www.youtube.com/watch?v=example
 excerpt: 我的一天，没有花哨的 setup，没有"高产秘诀"。只是一个适合我自己的节奏。
 ---
