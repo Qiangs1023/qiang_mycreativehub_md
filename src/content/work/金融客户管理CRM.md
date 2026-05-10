@@ -5,7 +5,7 @@ status:
   - 完成
 date: " 2026-05-10"
 excerpt: 用AI随手做小工具，满足日常工作需要，虽然是很小的事，但真的省了不少时间
-cover: /images/image 20260510111054
+cover: /images/image 20260510111054.png
 stack:
   - PostgreSQL
   - Python
