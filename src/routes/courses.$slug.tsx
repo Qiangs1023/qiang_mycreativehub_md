@@ -99,8 +99,11 @@ function CourseDetail() {
               {meta.cta ?? "立即报名"} →
             </a>
           ) : (
-            <span className="inline-flex items-center gap-2 rounded-full border border-hairline px-6 py-3 text-sm font-medium text-muted-foreground">
-              {meta.cta ?? "即将上线"}
+            <span
+              onClick={() => window.location.href = `/courses/pay?slug=${meta.slug}`}
+              className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+            >
+              {meta.cta ?? "立即报名"} →
             </span>
           )}
           <Link
@@ -163,9 +166,12 @@ function CourseDetail() {
                   {meta.cta ?? "立即报名"} →
                 </a>
               ) : (
-                <div className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full border border-hairline px-5 py-3.5 text-sm font-medium text-muted-foreground">
-                  即将上线
-                </div>
+                <span
+                  onClick={() => window.location.href = `/courses/pay?slug=${meta.slug}`}
+                  className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+                >
+                  {meta.cta ?? "立即报名"} →
+                </span>
               )}
               <p className="mt-4 text-center font-mono text-[10px] text-muted-foreground">
                 30 天无理由退款保障

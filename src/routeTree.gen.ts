@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as WritingSlugRouteImport } from './routes/writing.$slug'
 import { Route as WorkSlugRouteImport } from './routes/work.$slug'
 import { Route as VideosSlugRouteImport } from './routes/videos.$slug'
+import { Route as CoursesPayRouteImport } from './routes/courses.pay'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 
 const WritingRoute = WritingRouteImport.update({
@@ -77,6 +78,11 @@ const VideosSlugRoute = VideosSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => VideosRoute,
 } as any)
+const CoursesPayRoute = CoursesPayRouteImport.update({
+  id: '/pay',
+  path: '/pay',
+  getParentRoute: () => CoursesRoute,
+} as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/pay': typeof CoursesPayRoute
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByTo {
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/pay': typeof CoursesPayRoute
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
@@ -122,6 +130,7 @@ export interface FileRoutesById {
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
   '/courses/$slug': typeof CoursesSlugRoute
+  '/courses/pay': typeof CoursesPayRoute
   '/videos/$slug': typeof VideosSlugRoute
   '/work/$slug': typeof WorkSlugRoute
   '/writing/$slug': typeof WritingSlugRoute
@@ -138,6 +147,7 @@ export interface FileRouteTypes {
     | '/work'
     | '/writing'
     | '/courses/$slug'
+    | '/courses/pay'
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
@@ -152,6 +162,7 @@ export interface FileRouteTypes {
     | '/work'
     | '/writing'
     | '/courses/$slug'
+    | '/courses/pay'
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/work'
     | '/writing'
     | '/courses/$slug'
+    | '/courses/pay'
     | '/videos/$slug'
     | '/work/$slug'
     | '/writing/$slug'
@@ -261,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideosSlugRouteImport
       parentRoute: typeof VideosRoute
     }
+    '/courses/pay': {
+      id: '/courses/pay'
+      path: '/pay'
+      fullPath: '/courses/pay'
+      preLoaderRoute: typeof CoursesPayRouteImport
+      parentRoute: typeof CoursesRoute
+    }
     '/courses/$slug': {
       id: '/courses/$slug'
       path: '/$slug'
@@ -273,10 +292,12 @@ declare module '@tanstack/react-router' {
 
 interface CoursesRouteChildren {
   CoursesSlugRoute: typeof CoursesSlugRoute
+  CoursesPayRoute: typeof CoursesPayRoute
 }
 
 const CoursesRouteChildren: CoursesRouteChildren = {
   CoursesSlugRoute: CoursesSlugRoute,
+  CoursesPayRoute: CoursesPayRoute,
 }
 
 const CoursesRouteWithChildren =
