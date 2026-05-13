@@ -5,11 +5,16 @@ export const Route = createFileRoute("/courses/pay")({
   loader: ({ location }) => {
     const params = new URLSearchParams(location.search);
     const slug = params.get("slug");
-    if (!slug) throw new Error("课程不存在");
+    if (!slug) return null;
     const entry = findEntry(coursesEntries, slug);
-    if (!entry) throw new Error("课程不存在");
-    return entry;
+    return entry ?? null;
   },
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-2xl px-6 py-24 text-center">
+      <h1 className="font-display text-3xl">课程不存在</h1>
+      <Link to="/courses" className="mt-6 inline-block text-primary">← 返回课程列表</Link>
+    </div>
+  ),
   component: PayPage,
 });
 
@@ -17,12 +22,7 @@ function PayPage() {
   const course = Route.useLoaderData();
   
   if (!course) {
-    return (
-      <div className="mx-auto max-w-2xl px-6 py-24 text-center">
-        <h1 className="font-display text-3xl">课程不存在</h1>
-        <Link to="/courses" className="mt-6 text-primary">← 返回课程列表</Link>
-      </div>
-    );
+    return null;
   }
   
   const { meta } = course;
