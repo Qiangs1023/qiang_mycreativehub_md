@@ -13,6 +13,15 @@ export default defineConfig({
   cloudflare: false,
   vite: {
     base: productionBase,
+    server: {
+      proxy: {
+        "/api/dify": {
+          target: "http://43.167.234.114/v1",
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/dify/, ""),
+        },
+      },
+    },
   },
   tanstackStart: {
     router: {

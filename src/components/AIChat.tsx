@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, User, Loader2, AlertCircle } from "lucide-react";
+import { sendChatMessage, isDifyConfigured } from "@/lib/dify";
 
 interface Message {
   id: string;
@@ -29,8 +30,12 @@ export function AIChat() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const difyReady = isDifyConfigured();
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,6 +43,8 @@ export function AIChat() {
 
   const handleSend = async (content: string) => {
     if (!content.trim() || isLoading) return;
+
+    setError(null);
 
     const userMessage: Message = {
       id: generateId(),
@@ -50,22 +57,70 @@ export function AIChat() {
     setInput("");
     setIsLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    if (!difyReady) {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    const responses = [
-      "这是个很有趣的想法！让我从几个角度来分析一下。首先，我们可以考虑用户的核心需求是什么。",
-      "根据我的理解，你可能需要考虑几个方面：用户体验、技术可行性、以及长期维护成本。",
-      "很高兴和你探讨这个话题！其实有很多独立开发者都尝试过类似的方向，我可以分享一些他们的经验。",
-    ];
+      const responses = [
+        "这是个很有趣的想法！让我从几个角度来分析一下。首先，我们可以考虑用户的核心需求是什么。",
+        "根据我的理解，你可能需要考虑几个方面：用户体验、技术可行性、以及长期维护成本。",
+        "很高兴和你探讨这个话题！其实有很多独立开发者都尝试过类似的方向，我可以分享一些他们的经验。",
+      ];
 
-    const assistantMessage: Message = {
-      id: generateId(),
-      role: "assistant",
-      content: responses[Math.floor(Math.random() * responses.length)],
-      timestamp: new Date(),
-    };
+      const assistantMessage: Message = {
+        id: generateId(),
+        role: "assistant",
+        content: responses[Math.floor(Math.random() * responses.length)],
+        timestamp: new Date(),
+      };
 
-    setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
+      setIsLoading(false);
+      return;
+    }
+
+    const assistantMessageId = generateId();
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: assistantMessageId,
+        role: "assistant",
+        content: "",
+        timestamp: new Date(),
+      },
+    ]);
+
+    try {
+      const allMessages = [
+        ...messages.map((m) => ({ role: m.role, content: m.content })),
+        { role: "user" as const, content: content.trim() },
+      ];
+
+      let lastAnswer = "";
+
+      const result = await sendChatMessage(
+        allMessages,
+        (chunk) => {
+          lastAnswer = chunk;
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === assistantMessageId ? { ...m, content: chunk } : m
+            )
+          );
+        },
+        conversationId || undefined
+      );
+
+      setConversationId(result.conversationId);
+      setMessages((prev) =>
+        prev.map((m) =>
+          m.id === assistantMessageId ? { ...m, content: result.answer } : m
+        )
+      );
+    } catch (err) {
+      setError("发送消息失败，请稍后重试");
+      setMessages((prev) => prev.filter((m) => m.id !== assistantMessageId));
+    }
+
     setIsLoading(false);
   };
 
@@ -79,17 +134,30 @@ export function AIChat() {
   return (
     <section className="relative min-h-screen bg-background">
       <div className="mx-auto flex max-w-3xl flex-col pt-16" style={{ height: "calc(100vh - 80px)" }}>
-        <div className="flex items-center justify-end border-b border-hairline px-6 py-3">
+        <div className="flex items-center justify-between border-b border-hairline px-6 py-3">
           <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
-            Powered by Lumen
+            {difyReady ? "Connected to Dify" : "Powered by Lumen"}
           </div>
+          {!difyReady && (
+            <div className="flex items-center gap-1.5 font-mono text-[10px] text-yellow-600">
+              <AlertCircle className="h-3 w-3" />
+              未配置 Dify API
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-6">
+          {error && (
+            <div className="mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 font-mono text-xs text-red-600">
+              <AlertCircle className="h-4 w-4" />
+              {error}
+            </div>
+          )}
+
           <div className="space-y-6">
             {messages.map((message) => (
               <div
@@ -116,7 +184,7 @@ export function AIChat() {
                       : "border border-hairline bg-surface text-foreground"
                   }`}
                 >
-                  <p className="text-sm leading-relaxed">{message.content}</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
                   <p
                     className={`mt-1 font-mono text-[10px] ${
                       message.role === "user" ? "text-primary-foreground/60" : "text-muted-foreground"
