@@ -95,15 +95,15 @@ export function AIChat() {
         { role: "user" as const, content: content.trim() },
       ];
 
-      let lastAnswer = "";
+      let accumulatedAnswer = "";
 
       const result = await sendChatMessage(
         allMessages,
         (chunk) => {
-          lastAnswer = chunk;
+          accumulatedAnswer += chunk;
           setMessages((prev) =>
             prev.map((m) =>
-              m.id === assistantMessageId ? { ...m, content: chunk } : m
+              m.id === assistantMessageId ? { ...m, content: accumulatedAnswer } : m
             )
           );
         },
@@ -113,7 +113,7 @@ export function AIChat() {
       setConversationId(result.conversationId);
       setMessages((prev) =>
         prev.map((m) =>
-          m.id === assistantMessageId ? { ...m, content: result.answer } : m
+          m.id === assistantMessageId ? { ...m, content: accumulatedAnswer } : m
         )
       );
     } catch (err) {

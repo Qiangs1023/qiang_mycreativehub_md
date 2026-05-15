@@ -13,6 +13,10 @@ interface DifyResponse {
   mode?: string;
   answer?: string;
   created_at?: number;
+  id?: string;
+  task_id?: string;
+  position?: number;
+  thought?: string;
 }
 
 export async function sendChatMessage(
@@ -40,7 +44,8 @@ export async function sendChatMessage(
   });
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    const errorText = await response.text();
+    throw new Error(`API request failed: ${response.status} - ${errorText}`);
   }
 
   const reader = response.body?.getReader();
@@ -49,6 +54,7 @@ export async function sendChatMessage(
   }
 
   const decoder = new TextDecoder();
+  let buffer = "";
   let fullAnswer = "";
   let newConversationId = conversationId || "";
 
@@ -57,30 +63,48 @@ export async function sendChatMessage(
       const { done, value } = await reader.read();
       if (done) break;
 
-      const chunk = decoder.decode(value, { stream: true });
-      const lines = chunk.split("\n").filter((line) => line.trim() !== "");
+      buffer += decoder.decode(value, { stream: true });
 
-      for (const line of lines) {
-        if (line.startsWith("data: ")) {
+      while (buffer.includes("\n\n")) {
+        const eventEnd = buffer.indexOf("\n\n");
+        const eventData = buffer.slice(0, eventEnd);
+        buffer = buffer.slice(eventEnd + 2);
+
+        if (eventData.startsWith("data: ")) {
           try {
-            const data: DifyResponse = JSON.parse(line.slice(6));
+            const jsonStr = eventData.slice(6);
+            const data: DifyResponse = JSON.parse(jsonStr);
 
-            if (data.event === "conversation_created" || data.event === "generated_title") {
+            if (data.event === "conversation_created") {
               if (data.conversation_id) {
                 newConversationId = data.conversation_id;
               }
+              continue;
             }
 
-            if (data.event === "message" && data.answer) {
-              fullAnswer += data.answer;
-              onChunk?.(data.answer);
+            if (data.event === "agent_message" || data.event === "message") {
+              if (data.answer !== undefined) {
+                fullAnswer = data.answer;
+                onChunk?.(data.answer);
+              }
+              if (data.conversation_id) {
+                newConversationId = data.conversation_id;
+              }
+              continue;
             }
 
-            if (data.event === "message_end" && data.conversation_id) {
-              newConversationId = data.conversation_id;
+            if (data.event === "message_end") {
+              if (data.conversation_id) {
+                newConversationId = data.conversation_id;
+              }
+              continue;
             }
-          } catch {
-            // Skip invalid JSON lines
+
+            if (data.event === "error") {
+              console.error("Dify error:", data);
+            }
+          } catch (e) {
+            console.error("Failed to parse event data:", eventData, e);
           }
         }
       }
