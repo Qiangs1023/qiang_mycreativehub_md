@@ -20,7 +20,9 @@ export async function sendChatMessage(
   onChunk?: (content: string) => void,
   conversationId?: string
 ): Promise<{ answer: string; conversationId: string }> {
-  const url = `/api/dify/chat-messages`;
+  const url = import.meta.env.DEV
+    ? "/api/dify/chat-messages"
+    : `${API_BASE_URL}/v1/chat-messages`;
 
   const response = await fetch(url, {
     method: "POST",
