@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 
 const links = [
   { to: "/work", label: "Work" },
@@ -63,6 +63,16 @@ export function Nav() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
+            <a
+              href="http://web.benevolent.top/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+              aria-label="AI 助手"
+            >
+              <MessageCircle className="h-4 w-4" />
+              AI助手
+            </a>
             <Link
               to="/courses"
               className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -97,6 +107,16 @@ export function Nav() {
                 {l.label}
               </Link>
             ))}
+            <a
+              href="http://web.benevolent.top/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 font-display text-3xl text-foreground transition-colors hover:text-primary"
+            >
+              <MessageCircle className="h-8 w-8" />
+              AI 助手
+            </a>
             <Link
               to="/courses"
               onClick={() => setMobileMenuOpen(false)}

@@ -7,6 +7,7 @@ import { Work } from "@/components/Work";
 import { Writing } from "@/components/Writing";
 import { Videos } from "@/components/Videos";
 import { Courses } from "@/components/Courses";
+import { AIChatSection } from "@/components/AIChatSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({
