@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import portrait from "@/assets/portrait.jpg";
-import { writingEntries } from "@/lib/content";
+import { writingEntries, workEntries } from "@/lib/content";
 
 export function Hero() {
   const latestWriting = writingEntries[0];
+  const writingCount = writingEntries.length;
+  const workCount = workEntries.length;
 
   return (
     <section id="top" className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
@@ -86,12 +88,12 @@ export function Hero() {
               <div className="mt-1 text-muted-foreground">订阅读者</div>
             </div>
             <div>
-              <div className="font-display text-3xl text-foreground">48</div>
+              <div className="font-display text-3xl text-foreground">{writingCount}</div>
               <div className="mt-1 text-muted-foreground">已发布文章</div>
             </div>
             <div>
-              <div className="font-display text-3xl text-primary">3</div>
-              <div className="mt-1 text-muted-foreground">付费产品</div>
+              <div className="font-display text-3xl text-primary">{workCount}</div>
+              <div className="mt-1 text-muted-foreground">作品数</div>
             </div>
           </motion.div>
         </div>
