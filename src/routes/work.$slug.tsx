@@ -1,23 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
-import { findEntry, neighbours, workEntries } from "@/lib/content";
+import { loadWorks, findWork, neighbours } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
-    const entry = findEntry(workEntries, params.slug);
+    const entry = findWork(params.slug);
     if (!entry) throw notFound();
     return entry;
   },
   head: ({ loaderData }) => {
     if (!loaderData) return {};
-    const m = loaderData.meta;
+    const entry = loaderData;
     return {
       meta: [
-        { title: `${m.title} — Work · 数字旷野` },
-        { name: "description", content: m.excerpt ?? "" },
-        { property: "og:title", content: `${m.title} — Work · 数字旷野` },
-        { property: "og:description", content: m.excerpt ?? "" },
+        { title: `${entry.title} — Work · 数字旷野` },
+        { name: "description", content: entry.excerpt ?? "" },
+        { property: "og:title", content: `${entry.title} — Work · 数字旷野` },
+        { property: "og:description", content: entry.excerpt ?? "" },
       ],
     };
   },
@@ -34,9 +34,10 @@ export const Route = createFileRoute("/work/$slug")({
 
 function WorkDetail() {
   const entry = Route.useLoaderData();
-  const { meta, html } = entry;
-  const { prev, next } = neighbours(workEntries, meta.slug);
-  const cover = resolveCover(meta.cover);
+  const { bodyHtml, slug } = entry;
+  const collection = loadWorks();
+  const { prev, next } = neighbours(collection, slug);
+  const cover = resolveCover(entry.cover);
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16 md:py-24">
@@ -50,40 +51,40 @@ function WorkDetail() {
       <header className="mt-8 rounded-[2rem] border border-hairline bg-surface/40 p-8 md:p-10">
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-muted-foreground">
           <span className="text-primary">Project</span>
-          {meta.tag && (
+          {entry.tag && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.tag}</span>
+              <span>{entry.tag}</span>
             </>
           )}
-          {meta.status && (
+          {entry.status && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.status}</span>
+              <span>{entry.status}</span>
             </>
           )}
-          {meta.date && (
+          {entry.date && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.date}</span>
+              <span>{entry.date}</span>
             </>
           )}
         </div>
 
         <h1 className="mt-6 font-display text-balance text-4xl font-light leading-[1.05] tracking-tight md:text-6xl">
-          {meta.title}
+          {entry.title}
         </h1>
 
-        {meta.excerpt && (
+        {entry.excerpt && (
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {meta.excerpt}
+            {entry.excerpt}
           </p>
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          {meta.link && (
+          {entry.link && (
             <a
-              href={meta.link}
+              href={entry.link}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -97,9 +98,9 @@ function WorkDetail() {
           >
             返回项目列表
           </Link>
-          {meta.stack && (
+          {entry.stack && (
             <div className="flex flex-wrap gap-1.5 font-mono text-[10px] text-muted-foreground">
-              {meta.stack.map((s: string) => (
+              {entry.stack.map((s: string) => (
                 <span key={s} className="rounded border border-hairline px-2 py-0.5">
                   {s}
                 </span>
@@ -113,14 +114,14 @@ function WorkDetail() {
         <div className="mt-12 overflow-hidden rounded-[1.75rem] border border-hairline">
           <img
             src={cover}
-            alt={meta.title}
+            alt={entry.title}
             className="h-full w-full object-cover"
           />
         </div>
       )}
 
       <div className="mt-12 rounded-[2rem] border border-hairline bg-background p-6 md:p-10">
-        <Prose html={html} />
+        <Prose html={bodyHtml} />
       </div>
 
       <section className="mt-10 rounded-[2rem] border border-hairline bg-surface/30 p-6 md:p-8">
@@ -146,14 +147,14 @@ function WorkDetail() {
         {prev ? (
           <Link
             to="/work/$slug"
-            params={{ slug: prev.meta.slug }}
+            params={{ slug: prev.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               ← 上一个
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {prev.meta.title}
+              {prev.title}
             </span>
           </Link>
         ) : (
@@ -162,14 +163,14 @@ function WorkDetail() {
         {next ? (
           <Link
             to="/work/$slug"
-            params={{ slug: next.meta.slug }}
+            params={{ slug: next.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 text-right transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               下一个 →
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {next.meta.title}
+              {next.title}
             </span>
           </Link>
         ) : (
