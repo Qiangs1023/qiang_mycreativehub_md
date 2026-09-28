@@ -223,3 +223,45 @@ npm run build
 3. 项目根目录已包含 `.github/workflows/deploy.yml`，无需额外创建。
 4. 每次 `git push` 后，网站会自动构建并发布到 GitHub Pages。
 5. 同时，GitHub Actions 每天凌晨 3:30 会自动触发构建，无需推送也能保持 RSS 内容最新。
+
+---
+
+## 📬 飞书 Bitable 内容同步 (sync-feishu)
+
+本项目使用飞书多维表格管理 writings / works / videos / courses / abouts 五类内容。GitHub Actions 每 30 分钟 cron 同步一次（`.github/workflows/sync-feishu.yml`），本地构建时读取已 commit 的 `data/*.json`。
+
+### 本地预览真实数据
+
+```bash
+FEISHU_APP_ID=<your_app_id> \
+FEISHU_APP_SECRET=<your_app_secret> \
+FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
+FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8 \
+FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts \
+npm run sync:feishu
+
+npm run dev
+```
+
+### 必需的 GitHub Secrets
+
+在仓库 Settings → Secrets and variables → Actions 添加：
+
+| Secret | 来源 |
+|---|---|
+| `FEISHU_APP_ID` | 飞书开放平台 → 应用 → 凭证 → App ID |
+| `FEISHU_APP_SECRET` | 同上 → App Secret |
+| `FEISHU_APP_TOKEN` | Base URL: `IjLnbCNkIaaJvjsEbAjc8XiEnYb` |
+| `FEISHU_TABLE_IDS` | 5 张表 id，逗号分隔 |
+| `FEISHU_TABLE_KINDS` | `writings,works,videos,courses,abouts` |
+
+### 手动触发同步
+
+GitHub → Actions → sync-feishu → Run workflow。
+
+### 内容工作流
+
+1. 在飞书 Bitable 编辑/新增记录
+2. 等待 30 分钟内自动同步（也可手动触发）
+3. PR 自动 commit 到 main，包含 `data/*.json` 和附件
+4. 合并后，下一次站点构建读取新数据
