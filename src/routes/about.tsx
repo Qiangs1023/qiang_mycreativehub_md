@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Prose } from "@/components/Prose";
-import { aboutEntries } from "@/lib/content";
+import { loadAbout } from "@/lib/data";
 
 const stack = [
   "TypeScript",
@@ -18,20 +18,22 @@ const stack = [
 
 export const Route = createFileRoute("/about")({
   loader: async () => {
-    const entry = aboutEntries[0];
-    if (entry) {
-      return { html: entry.html, meta: { ...entry.meta } };
-    }
-    return null;
+    const entry = loadAbout();
+    return {
+      title: entry.title,
+      excerpt: entry.excerpt,
+      cover: entry.cover,
+      bodyHtml: entry.bodyHtml,
+    };
   },
   head: ({ loaderData }) => {
-    const m = loaderData?.meta;
+    const data = loaderData;
     return {
       meta: [
-        { title: m?.title ? `${m.title}` : "About — 关于数字旷野" },
+        { title: data?.title ? `${data.title}` : "About — 关于数字旷野" },
         {
           name: "description",
-          content: m?.excerpt ?? "我是数字旷野 — 2019 年从大厂离职，一个人做产品、写文章、录视频。",
+          content: data?.excerpt ?? "我是数字旷野 — 2019 年从大厂离职，一个人做产品、写文章、录视频。",
         },
         { property: "og:title", content: "About — 关于数字旷野" },
         {
@@ -57,13 +59,13 @@ function AboutPage() {
             05 / About
           </div>
           <h1 className="font-display text-5xl font-light tracking-tight text-foreground md:text-6xl">
-            {data?.meta.title ?? "About"}
+            {data?.title ?? "About"}
           </h1>
         </header>
 
         <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
           <div className="md:col-span-2">
-            <Prose html={data?.html ?? ""} />
+            <Prose html={data?.bodyHtml ?? ""} />
           </div>
 
           <aside className="space-y-8">
