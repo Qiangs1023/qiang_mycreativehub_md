@@ -1,23 +1,23 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
-import { findEntry, neighbours, videosEntries } from "@/lib/content";
+import { loadVideos, findVideo, neighbours } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
 export const Route = createFileRoute("/videos/$slug")({
   loader: ({ params }) => {
-    const entry = findEntry(videosEntries, params.slug);
+    const entry = findVideo(params.slug);
     if (!entry) throw notFound();
     return entry;
   },
   head: ({ loaderData }) => {
     if (!loaderData) return {};
-    const m = loaderData.meta;
+    const entry = loaderData;
     return {
       meta: [
-        { title: `${m.title} — Videos · 数字旷野` },
-        { name: "description", content: m.excerpt ?? "" },
-        { property: "og:title", content: `${m.title} — Videos · 数字旷野` },
-        { property: "og:description", content: m.excerpt ?? "" },
+        { title: `${entry.title} — Videos · 数字旷野` },
+        { name: "description", content: entry.excerpt ?? "" },
+        { property: "og:title", content: `${entry.title} — Videos · 数字旷野` },
+        { property: "og:description", content: entry.excerpt ?? "" },
       ],
     };
   },
@@ -34,9 +34,10 @@ export const Route = createFileRoute("/videos/$slug")({
 
 function VideoDetail() {
   const entry = Route.useLoaderData();
-  const { meta, html } = entry;
-  const { prev, next } = neighbours(videosEntries, meta.slug);
-  const cover = resolveCover(meta.cover);
+  const { bodyHtml, slug } = entry;
+  const collection = loadVideos();
+  const { prev, next } = neighbours(collection, slug);
+  const cover = resolveCover(entry.cover);
 
   return (
     <article className="mx-auto max-w-3xl px-6 py-16 md:py-24">
@@ -50,46 +51,46 @@ function VideoDetail() {
       <header className="mt-8 rounded-[2rem] border border-hairline bg-surface/40 p-8 md:p-10">
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-muted-foreground">
           <span className="text-primary">Video</span>
-          {meta.platform && (
+          {entry.platform && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.platform}</span>
+              <span>{entry.platform}</span>
             </>
           )}
-          {meta.date && (
+          {entry.date && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.date}</span>
+              <span>{entry.date}</span>
             </>
           )}
-          {meta.duration && (
+          {entry.duration && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.duration}</span>
+              <span>{entry.duration}</span>
             </>
           )}
-          {meta.views && (
+          {entry.views && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.views}</span>
+              <span>{entry.views}</span>
             </>
           )}
         </div>
 
         <h1 className="mt-6 font-display text-balance text-4xl font-light leading-[1.05] tracking-tight md:text-6xl">
-          {meta.title}
+          {entry.title}
         </h1>
 
-        {meta.excerpt && (
+        {entry.excerpt && (
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {meta.excerpt}
+            {entry.excerpt}
           </p>
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          {meta.videoUrl && (
+          {entry.videoUrl && (
             <a
-              href={meta.videoUrl}
+              href={entry.videoUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -97,7 +98,7 @@ function VideoDetail() {
               <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
                 <path d="M8 5v14l11-7z" />
               </svg>
-              在 {meta.platform} 观看
+              在 {entry.platform} 观看
             </a>
           )}
           <Link
@@ -109,9 +110,9 @@ function VideoDetail() {
         </div>
       </header>
 
-      {cover && meta.videoUrl && (
+      {cover && entry.videoUrl && (
         <a
-          href={meta.videoUrl}
+          href={entry.videoUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="group relative mt-12 block overflow-hidden rounded-[1.75rem] border border-hairline"
@@ -119,7 +120,7 @@ function VideoDetail() {
           <div className="relative aspect-video">
             <img
               src={cover}
-              alt={meta.title}
+              alt={entry.title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-background/10 to-transparent" />
@@ -132,9 +133,9 @@ function VideoDetail() {
             </div>
             <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
               <div className="flex items-center gap-2 rounded-full border border-foreground/10 bg-background/40 px-3 py-1.5 font-mono text-xs text-foreground/80 backdrop-blur">
-                <span>{meta.platform}</span>
-                {meta.duration && <span>·</span>}
-                {meta.duration && <span>{meta.duration}</span>}
+                <span>{entry.platform}</span>
+                {entry.duration && <span>·</span>}
+                {entry.duration && <span>{entry.duration}</span>}
               </div>
               <div className="rounded-full border border-foreground/10 bg-background/40 px-3 py-1.5 font-mono text-xs text-foreground/80 backdrop-blur">
                 点击观看 →
@@ -145,7 +146,7 @@ function VideoDetail() {
       )}
 
       <div className="mt-12 rounded-[2rem] border border-hairline bg-background p-6 md:p-10">
-        <Prose html={html} />
+        <Prose html={bodyHtml} />
       </div>
 
       <section className="mt-10 rounded-[2rem] border border-hairline bg-surface/30 p-6 md:p-8">
@@ -171,14 +172,14 @@ function VideoDetail() {
         {prev ? (
           <Link
             to="/videos/$slug"
-            params={{ slug: prev.meta.slug }}
+            params={{ slug: prev.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               ← 上一支
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {prev.meta.title}
+              {prev.title}
             </span>
           </Link>
         ) : (
@@ -187,14 +188,14 @@ function VideoDetail() {
         {next ? (
           <Link
             to="/videos/$slug"
-            params={{ slug: next.meta.slug }}
+            params={{ slug: next.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 text-right transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               下一支 →
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {next.meta.title}
+              {next.title}
             </span>
           </Link>
         ) : (
