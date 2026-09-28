@@ -13,7 +13,7 @@ export const WritingSchema = z.object({
   cover: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published", "archived"]).default("draft"),
   featured: z.boolean().default(false),
 });
 
@@ -24,13 +24,12 @@ export const WorkSchema = z.object({
   date: z.string().optional(),
   publishedAt: z.string().optional(),
   tag: z.string().optional(),
-  status: z.enum(["active", "archived"]),
+  status: z.enum(["active", "archived"]).default("active"),
   cover: z.string().optional(),
   stack: z.array(z.string()).default([]),
   link: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
-  featured: z.boolean().default(false),
   order: z.number().default(0),
 });
 
@@ -49,7 +48,6 @@ export const VideoSchema = z.object({
   videoUrl: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
-  featured: z.boolean().default(false),
   order: z.number().default(0),
 });
 
@@ -72,7 +70,6 @@ export const CourseSchema = z.object({
   url: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
-  featured: z.boolean().default(false),
   order: z.number().default(0),
 });
 
