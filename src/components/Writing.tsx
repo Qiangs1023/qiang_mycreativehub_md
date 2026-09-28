@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./SectionHeader";
-import { writingEntries } from "@/lib/content";
+import { loadWritings } from "@/lib/data";
 
 function formatDate(date?: string | null) {
   if (!date) return "";
@@ -10,7 +10,7 @@ function formatDate(date?: string | null) {
 }
 
 export function Writing({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
-  const items = limit ? writingEntries.slice(0, limit) : writingEntries;
+  const items = limit ? loadWritings().slice(0, limit) : loadWritings();
 
   return (
     <section id="writing" className="relative border-y border-hairline bg-surface/30 py-24 md:py-32">
@@ -31,23 +31,23 @@ export function Writing({ showAction = true, limit }: { showAction?: boolean; li
 
         <ul className="divide-y divide-hairline border-y border-hairline">
           {items.map((post) => (
-            <li key={post.meta.slug}>
+            <li key={post.slug}>
               <Link
                 to="/writing/$slug"
-                params={{ slug: post.meta.slug }}
+                params={{ slug: post.slug }}
                 className="group grid grid-cols-12 items-baseline gap-4 py-6 transition-colors hover:bg-surface md:gap-8"
               >
                 <div className="col-span-12 font-mono text-xs text-muted-foreground md:col-span-2">
-                  {formatDate(post.meta.date)}
+                  {formatDate(post.date)}
                 </div>
                 <div className="col-span-12 md:col-span-7">
                   <h3 className="font-display text-2xl font-normal leading-tight text-foreground transition-colors group-hover:text-primary md:text-3xl">
-                    {post.meta.title}
+                    {post.title}
                   </h3>
-                  {post.meta.excerpt && <p className="mt-2 text-sm text-muted-foreground">{post.meta.excerpt}</p>}
+                  {post.excerpt && <p className="mt-2 text-sm text-muted-foreground">{post.excerpt}</p>}
                 </div>
                 <div className="col-span-6 font-mono text-xs text-muted-foreground md:col-span-2">
-                  {post.meta.tag} {post.meta.readTime ? `· ${post.meta.readTime}` : ""}
+                  {post.tag} {post.readTime ? `· ${post.readTime}` : ""}
                 </div>
                 <div className="col-span-6 text-right font-mono text-xs text-muted-foreground transition-colors group-hover:text-primary md:col-span-1">
                   →
