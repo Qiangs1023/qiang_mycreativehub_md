@@ -23,25 +23,37 @@ const videosArr: Video[] = VideoSchema.array().parse(videosData.videos);
 const coursesArr: Course[] = CourseSchema.array().parse(coursesData.courses);
 const aboutObj: About = AboutSchema.parse(aboutData);
 
-const byDateDesc = (a: { publishedAt?: string; date?: string }, b: { publishedAt?: string; date?: string }) => {
+export const byDateDesc = (a: { publishedAt?: string; date?: string }, b: { publishedAt?: string; date?: string }) => {
   const av = a.publishedAt ?? a.date ?? "";
   const bv = b.publishedAt ?? b.date ?? "";
   return bv.localeCompare(av);
 };
 
-const byOrderAsc = (a: { order: number }, b: { order: number }) => a.order - b.order;
+export const byOrderAsc = (a: { order: number }, b: { order: number }) => a.order - b.order;
 
-export const loadWritings = (): Writing[] =>
-  writingsArr.filter((w) => w.status === "published").slice().sort(byDateDesc);
+const publishedWritings: Writing[] = writingsArr
+  .filter((w) => w.status === "published")
+  .sort(byDateDesc);
 
-export const loadWorks = (): Work[] =>
-  worksArr.filter((w) => w.status === "active").slice().sort(byOrderAsc);
+const activeWorks: Work[] = worksArr
+  .filter((w) => w.status === "active")
+  .sort(byOrderAsc);
 
-export const loadVideos = (): Video[] =>
-  videosArr.filter((v) => v.status === "published").slice().sort(byDateDesc);
+const publishedVideos: Video[] = videosArr
+  .filter((v) => v.status === "published")
+  .sort(byDateDesc);
 
-export const loadCourses = (): Course[] =>
-  coursesArr.filter((c) => c.status === "published").slice().sort(byOrderAsc);
+const publishedCourses: Course[] = coursesArr
+  .filter((c) => c.status === "published")
+  .sort(byOrderAsc);
+
+export const loadWritings = (): Writing[] => publishedWritings;
+
+export const loadWorks = (): Work[] => activeWorks;
+
+export const loadVideos = (): Video[] => publishedVideos;
+
+export const loadCourses = (): Course[] => publishedCourses;
 
 export const loadAbout = (): About => aboutObj;
 
