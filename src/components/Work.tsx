@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./SectionHeader";
-import { workEntries } from "@/lib/content";
+import { loadWorks } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
 export function Work({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
-  const items = limit ? workEntries.slice(0, limit) : workEntries;
+  const items = limit ? loadWorks().slice(0, limit) : loadWorks();
 
   return (
     <section id="work" className="relative py-24 md:py-32">
@@ -25,18 +25,18 @@ export function Work({ showAction = true, limit }: { showAction?: boolean; limit
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {items.map((p, i) => {
-            const img = resolveCover(p.meta.cover ?? undefined);
-            const tag = p.meta.tag;
+            const img = resolveCover(p.cover ?? undefined);
+            const tag = p.tag;
             return (
               <Link
-                key={p.meta.slug}
+                key={p.slug}
                 to="/work/$slug"
-                params={{ slug: p.meta.slug }}
+                params={{ slug: p.slug }}
                 className="group relative flex flex-col overflow-hidden rounded-2xl border border-hairline bg-surface transition-all duration-500 hover:-translate-y-1 hover:border-primary/40"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   {img && (
-                    <img src={img} alt={p.meta.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <img src={img} alt={p.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent" />
                   <div className="absolute left-3 top-3 rounded-full border border-hairline bg-background/70 px-2.5 py-1 font-mono text-[10px] text-muted-foreground backdrop-blur">
@@ -44,11 +44,11 @@ export function Work({ showAction = true, limit }: { showAction?: boolean; limit
                   </div>
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-display text-2xl font-normal text-foreground">{p.meta.title}</h3>
-                  {p.meta.excerpt && <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{p.meta.excerpt}</p>}
-                  {p.meta.stack && p.meta.stack.length > 0 && (
+                  <h3 className="font-display text-2xl font-normal text-foreground">{p.title}</h3>
+                  {p.excerpt && <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{p.excerpt}</p>}
+                  {p.stack && p.stack.length > 0 && (
                     <div className="mt-5 flex flex-wrap gap-1.5 font-mono text-[10px] text-muted-foreground">
-                      {p.meta.stack.slice(0, 4).map((s: string) => (
+                      {p.stack.slice(0, 4).map((s: string) => (
                         <span key={s} className="rounded border border-hairline px-2 py-0.5">{s}</span>
                       ))}
                     </div>
