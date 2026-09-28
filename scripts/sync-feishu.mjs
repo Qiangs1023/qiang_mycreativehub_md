@@ -206,3 +206,81 @@ export function normalizeAbout(records) {
     updatedAt: f.updatedAt ? String(f.updatedAt) : undefined,
   };
 }
+
+export function hash(obj) {
+  return crypto.createHash("sha256").update(typeof obj === "string" ? obj : JSON.stringify(obj)).digest("hex");
+}
+
+export function writeIfChanged(file, data) {
+  const json = JSON.stringify(data, null, 2) + "\n";
+  const existing = fs.existsSync(file) ? fs.readFileSync(file, "utf-8") : "";
+  if (hash(json) === hash(existing)) {
+    console.log(`unchanged: ${path.relative(ROOT, file)}`);
+    return false;
+  }
+  fs.writeFileSync(file, json);
+  console.log(`${existing ? "updated" : "created"}: ${path.relative(ROOT, file)}`);
+  return true;
+}
+
+export async function downloadAttachment(url, outPath) {
+  if (fs.existsSync(outPath)) return;
+  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  const token = await getToken();
+  const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+  if (!res.ok) throw new Error(`attachment ${res.status}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  fs.writeFileSync(outPath, buf);
+}
+
+export async function syncAttachments(records, slug, kind) {
+  const attachmentField = { writings: "cover", works: "cover", videos: "cover", courses: "cover" }[kind];
+  if (!attachmentField) return;
+  const tasks = [];
+  for (const r of records) {
+    const att = r.fields[attachmentField]?.[0];
+    if (!att?.tmp_url) continue;
+    const out = path.join(ROOT, "public", "uploads", kind, slug, att.file_name);
+    tasks.push(
+      downloadAttachment(att.tmp_url, out).catch((err) =>
+        console.warn(`attachment ${slug}: ${err.message}`),
+      ),
+    );
+  }
+  await Promise.all(tasks);
+}
+
+const TABLE_MAP = Object.fromEntries(TABLE_KINDS.map((kind, i) => [kind, TABLE_IDS[i]]));
+
+export async function main() {
+  const token = await getToken();
+  const articleRecords = TABLE_MAP.writings ? await listRecords(token, TABLE_MAP.writings) : [];
+  const workRecords = TABLE_MAP.works ? await listRecords(token, TABLE_MAP.works) : [];
+  const videoRecords = TABLE_MAP.videos ? await listRecords(token, TABLE_MAP.videos) : [];
+  const courseRecords = TABLE_MAP.courses ? await listRecords(token, TABLE_MAP.courses) : [];
+  const aboutRecords = TABLE_MAP.abouts ? await listRecords(token, TABLE_MAP.abouts) : [];
+
+  const writings = articleRecords.map(normalizeWriting).filter((w) => w.status === "published");
+  const works = workRecords.map(normalizeWork).filter((w) => w.status === "active");
+  const videos = videoRecords.map(normalizeVideo).filter((v) => v.status === "published");
+  const courses = courseRecords.map(normalizeCourse).filter((c) => c.status === "published");
+  const about = normalizeAbout(aboutRecords);
+
+  await syncAttachments(articleRecords, "writings", "writings");
+  await syncAttachments(workRecords, "works", "works");
+  await syncAttachments(videoRecords, "videos", "videos");
+  await syncAttachments(courseRecords, "courses", "courses");
+
+  writeIfChanged(path.join(ROOT, "data/writings.json"), { writings });
+  writeIfChanged(path.join(ROOT, "data/works.json"), { works });
+  writeIfChanged(path.join(ROOT, "data/videos.json"), { videos });
+  writeIfChanged(path.join(ROOT, "data/courses.json"), { courses });
+  writeIfChanged(path.join(ROOT, "data/about.json"), about);
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
