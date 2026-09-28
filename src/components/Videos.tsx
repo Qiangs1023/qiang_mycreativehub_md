@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./SectionHeader";
-import { videosEntries } from "@/lib/content";
+import { loadVideos } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
 export function Videos({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
-  const items = limit ? videosEntries.slice(0, limit) : videosEntries;
+  const items = limit ? loadVideos().slice(0, limit) : loadVideos();
 
   return (
     <section id="videos" className="relative py-24 md:py-32">
@@ -25,19 +25,19 @@ export function Videos({ showAction = true, limit }: { showAction?: boolean; lim
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {items.map((v, i) => {
-            const img = v.meta.cover?.startsWith("http") ? v.meta.cover : resolveCover(v.meta.cover ?? undefined);
+            const img = v.cover?.startsWith("http") ? v.cover : resolveCover(v.cover ?? undefined);
             const featured = i === 0;
-            const meta = [v.meta.tag, v.meta.date?.slice(0, 4), v.meta.duration].filter(Boolean).join(" · ");
+            const meta = [v.tag, v.date?.slice(0, 4), v.duration].filter(Boolean).join(" · ");
             return (
               <Link
-                key={v.meta.slug}
+                key={v.slug}
                 to="/videos/$slug"
-                params={{ slug: v.meta.slug }}
+                params={{ slug: v.slug }}
                 className={`group relative overflow-hidden rounded-2xl border border-hairline bg-surface ${featured ? "md:col-span-2" : ""}`}
               >
                 <div className="relative aspect-video overflow-hidden">
                   {img && (
-                    <img src={img} alt={v.meta.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <img src={img} alt={v.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/10 to-transparent" />
                   <div className="absolute inset-0 flex items-center justify-center">
@@ -51,7 +51,7 @@ export function Videos({ showAction = true, limit }: { showAction?: boolean; lim
                 <div className="p-5">
                   <div className="mb-1 font-mono text-[10px] text-muted-foreground">{meta}</div>
                   <h3 className="font-display text-xl font-normal text-foreground transition-colors group-hover:text-primary">
-                    {v.meta.title}
+                    {v.title}
                   </h3>
                 </div>
               </Link>
