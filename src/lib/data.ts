@@ -1,9 +1,9 @@
 // src/lib/data.ts
-import writingsData from "@/data/writings.json";
-import worksData from "@/data/works.json";
-import videosData from "@/data/videos.json";
-import coursesData from "@/data/courses.json";
-import aboutData from "@/data/about.json";
+import writingsData from "@data/writings.json";
+import worksData from "@data/works.json";
+import videosData from "@data/videos.json";
+import coursesData from "@data/courses.json";
+import aboutData from "@data/about.json";
 import {
   WritingSchema,
   WorkSchema,
