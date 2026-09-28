@@ -11,7 +11,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "fetch-rss": "node scripts/fetch-rss.mjs",
-    "prebuild": "node scripts/fetch-rss.mjs"
+    "prebuild": "node scripts/fetch-rss.mjs",
+    "sync:feishu": "node scripts/sync-feishu.mjs",
+    "test:sync": "node --test scripts/sync-feishu.test.mjs scripts/sync-feishu-io.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
