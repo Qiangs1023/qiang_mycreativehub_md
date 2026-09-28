@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import portrait from "@/assets/portrait.jpg";
-import { writingEntries, workEntries } from "@/lib/content";
+import { loadWritings, loadWorks } from "@/lib/data";
 
 export function Hero() {
-  const latestWriting = writingEntries[0];
-  const writingCount = writingEntries.length;
-  const workCount = workEntries.length;
+  const writings = loadWritings();
+  const works = loadWorks();
+  const latestWriting = writings[0];
+  const writingCount = writings.length;
+  const workCount = works.length;
 
   return (
     <section id="top" className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
@@ -62,7 +64,7 @@ export function Hero() {
             {latestWriting ? (
               <Link
                 to="/writing/$slug"
-                params={{ slug: latestWriting.meta.slug }}
+                params={{ slug: latestWriting.slug }}
                 className="inline-flex items-center gap-2 rounded-full border border-hairline px-5 py-3 text-sm text-foreground transition-colors hover:bg-surface"
               >
                 阅读最新文章

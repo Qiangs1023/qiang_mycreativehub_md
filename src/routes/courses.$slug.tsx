@@ -1,22 +1,22 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
-import { findEntry, neighbours, coursesEntries } from "@/lib/content";
+import { findCourse, loadCourses, neighbours } from "@/lib/data";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
-    const entry = findEntry(coursesEntries, params.slug);
+    const entry = findCourse(params.slug);
     if (!entry) throw notFound();
     return entry;
   },
   head: ({ loaderData }) => {
     if (!loaderData) return {};
-    const m = loaderData.meta;
+    const entry = loaderData;
     return {
       meta: [
-        { title: `${m.title} — Courses · 数字旷野` },
-        { name: "description", content: m.excerpt ?? "" },
-        { property: "og:title", content: `${m.title} — Courses · 数字旷野` },
-        { property: "og:description", content: m.excerpt ?? "" },
+        { title: `${entry.title} — Courses · 数字旷野` },
+        { name: "description", content: entry.excerpt ?? "" },
+        { property: "og:title", content: `${entry.title} — Courses · 数字旷野` },
+        { property: "og:description", content: entry.excerpt ?? "" },
       ],
     };
   },
@@ -33,8 +33,8 @@ export const Route = createFileRoute("/courses/$slug")({
 
 function CourseDetail() {
   const entry = Route.useLoaderData();
-  const { meta, html } = entry;
-  const { prev, next } = neighbours(coursesEntries, meta.slug);
+  const { bodyHtml, slug } = entry;
+  const { prev, next } = neighbours(loadCourses(), slug);
 
   return (
     <article className="mx-auto max-w-5xl px-6 py-16 md:py-24">
@@ -48,62 +48,62 @@ function CourseDetail() {
       <header className="mt-8 rounded-[2rem] border border-hairline bg-surface/40 p-8 md:p-10">
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-muted-foreground">
           <span className="text-primary">Course</span>
-          {meta.tag && (
+          {entry.tag && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.tag}</span>
+              <span>{entry.tag}</span>
             </>
           )}
-          {meta.students && (
+          {entry.students && (
             <>
               <span className="h-px w-6 bg-hairline" />
-              <span>{meta.students}</span>
+              <span>{entry.students}</span>
             </>
           )}
-          {meta.badge && (
+          {entry.badge && (
             <>
               <span className="h-px w-6 bg-hairline" />
               <span className="rounded-full bg-primary/10 px-2.5 py-1 text-[10px] uppercase tracking-wider text-primary">
-                {meta.badge}
+                {entry.badge}
               </span>
             </>
           )}
         </div>
 
         <h1 className="mt-6 font-display text-balance text-4xl font-light leading-[1.05] tracking-tight md:text-6xl">
-          {meta.title}
+          {entry.title}
         </h1>
 
-        {meta.excerpt && (
+        {entry.excerpt && (
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            {meta.excerpt}
+            {entry.excerpt}
           </p>
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <div className="flex items-baseline gap-3">
-            <span className="font-display text-4xl text-foreground">{meta.price}</span>
-            {meta.original && (
+            <span className="font-display text-4xl text-foreground">{entry.price}</span>
+            {entry.original && (
               <span className="font-mono text-sm text-muted-foreground line-through">
-                {meta.original}
+                {entry.original}
               </span>
             )}
           </div>
-          {meta.link || meta.url ? (
+          {entry.url ? (
             <a
-              href={meta.link || meta.url}
+              href={entry.url}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              {meta.cta ?? "立即报名"} →
+              {entry.cta ?? "立即报名"} →
             </a>
           ) : (
             <span
-              onClick={() => window.location.href = `/courses/pay?slug=${meta.slug}`}
+              onClick={() => window.location.href = `/courses/pay?slug=${slug}`}
               className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              {meta.cta ?? "立即报名"} →
+              {entry.cta ?? "立即报名"} →
             </span>
           )}
           <Link
@@ -118,16 +118,16 @@ function CourseDetail() {
       <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-12">
         <div className="lg:col-span-7">
           <div className="rounded-[2rem] border border-hairline bg-background p-6 md:p-10">
-            <Prose html={html} />
+            <Prose html={bodyHtml} />
           </div>
 
-          {meta.features && (
+          {entry.features && (
             <div className="mt-8 rounded-[2rem] border border-hairline bg-surface/30 p-6 md:p-8">
               <div className="mb-5 font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                 课程包含
               </div>
               <ul className="space-y-3">
-                {meta.features.map((f: string) => (
+                {entry.features.map((f: string) => (
                   <li key={f} className="flex items-start gap-3 text-sm text-foreground/90">
                     <span className="mt-1.5 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
                     {f}
@@ -145,32 +145,32 @@ function CourseDetail() {
                 立即加入
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="font-display text-5xl text-foreground">{meta.price}</span>
-                {meta.original && (
+                <span className="font-display text-5xl text-foreground">{entry.price}</span>
+                {entry.original && (
                   <span className="font-mono text-sm text-muted-foreground line-through">
-                    {meta.original}
+                    {entry.original}
                   </span>
                 )}
               </div>
-              {meta.students && (
-                <div className="mt-1 font-mono text-xs text-muted-foreground">{meta.students}</div>
+              {entry.students && (
+                <div className="mt-1 font-mono text-xs text-muted-foreground">{entry.students}</div>
               )}
 
-              {meta.link || meta.url ? (
+              {entry.url ? (
                 <a
-                  href={meta.link || meta.url}
+                  href={entry.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
                 >
-                  {meta.cta ?? "立即报名"} →
+                  {entry.cta ?? "立即报名"} →
                 </a>
               ) : (
                 <span
-                  onClick={() => window.location.href = `/courses/pay?slug=${meta.slug}`}
+                  onClick={() => window.location.href = `/courses/pay?slug=${slug}`}
                   className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
                 >
-                  {meta.cta ?? "立即报名"} →
+                  {entry.cta ?? "立即报名"} →
                 </span>
               )}
               <p className="mt-4 text-center font-mono text-[10px] text-muted-foreground">
@@ -178,12 +178,12 @@ function CourseDetail() {
               </p>
             </div>
 
-            {meta.students && (
+            {entry.students && (
               <div className="rounded-[1.75rem] border border-hairline bg-background p-6">
                 <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
                   已有学员
                 </div>
-                <div className="mt-2 font-display text-3xl text-foreground">{meta.students}</div>
+                <div className="mt-2 font-display text-3xl text-foreground">{entry.students}</div>
               </div>
             )}
           </div>
@@ -213,14 +213,14 @@ function CourseDetail() {
         {prev ? (
           <Link
             to="/courses/$slug"
-            params={{ slug: prev.meta.slug }}
+            params={{ slug: prev.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               ← 上一门
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {prev.meta.title}
+              {prev.title}
             </span>
           </Link>
         ) : (
@@ -229,14 +229,14 @@ function CourseDetail() {
         {next ? (
           <Link
             to="/courses/$slug"
-            params={{ slug: next.meta.slug }}
+            params={{ slug: next.slug }}
             className="group flex flex-col gap-1 rounded-2xl border border-hairline p-5 text-right transition-colors hover:border-primary/40 hover:bg-surface"
           >
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
               下一门 →
             </span>
             <span className="font-display text-lg leading-snug text-foreground transition-colors group-hover:text-primary">
-              {next.meta.title}
+              {next.title}
             </span>
           </Link>
         ) : (

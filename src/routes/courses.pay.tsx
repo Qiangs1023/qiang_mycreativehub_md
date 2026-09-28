@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { findEntry, coursesEntries } from "@/lib/content";
+import { findCourse } from "@/lib/data";
 
 export const Route = createFileRoute("/courses/pay")({
   loader: ({ location }) => {
     const params = new URLSearchParams(location.search);
     const slug = params.get("slug");
     if (!slug) return null;
-    const entry = findEntry(coursesEntries, slug);
+    const entry = findCourse(slug);
     return entry ?? null;
   },
   notFoundComponent: () => (
@@ -24,8 +24,6 @@ function PayPage() {
   if (!course) {
     return null;
   }
-  
-  const { meta } = course;
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-24">
@@ -39,8 +37,8 @@ function PayPage() {
       <div className="mt-12 rounded-[2rem] border border-hairline bg-surface/40 p-8 md:p-10">
         <div className="text-center">
           <span className="font-mono text-xs text-primary">报名课程</span>
-          <h1 className="mt-3 font-display text-3xl">{meta.title}</h1>
-          <p className="mt-4 font-display text-5xl text-primary">{meta.price}</p>
+          <h1 className="mt-3 font-display text-3xl">{course.title}</h1>
+          <p className="mt-4 font-display text-5xl text-primary">{course.price}</p>
         </div>
 
         <div className="mt-10 space-y-6">
@@ -60,7 +58,7 @@ function PayPage() {
             <ol className="mt-4 space-y-2 text-sm">
               <li className="flex items-center gap-2">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">1</span>
-                扫码支付 {meta.price}
+                扫码支付 {course.price}
               </li>
               <li className="flex items-center gap-2">
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">2</span>
