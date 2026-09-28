@@ -2,10 +2,10 @@
 import { z } from "zod";
 
 export const WritingSchema = z.object({
-  slug: z.string(),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
   excerpt: z.string().optional(),
-  date: z.string().optional(),
+  date: z.string(),
   publishedAt: z.string().optional(),
   tag: z.string().optional(),
   tags: z.array(z.string()).default([]),
@@ -18,10 +18,10 @@ export const WritingSchema = z.object({
 });
 
 export const WorkSchema = z.object({
-  slug: z.string(),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
   excerpt: z.string().optional(),
-  date: z.string().optional(),
+  date: z.string(),
   publishedAt: z.string().optional(),
   tag: z.string().optional(),
   status: z.enum(["active", "archived"]).default("active"),
@@ -34,13 +34,13 @@ export const WorkSchema = z.object({
 });
 
 export const VideoSchema = z.object({
-  slug: z.string(),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
   excerpt: z.string().optional(),
-  date: z.string().optional(),
+  date: z.string(),
   publishedAt: z.string().optional(),
   tag: z.string().optional(),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published"]).default("draft"),
   cover: z.string().optional(),
   platform: z.string().optional(),
   duration: z.string().optional(),
@@ -52,13 +52,13 @@ export const VideoSchema = z.object({
 });
 
 export const CourseSchema = z.object({
-  slug: z.string(),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
   excerpt: z.string().optional(),
-  date: z.string().optional(),
+  date: z.string(),
   publishedAt: z.string().optional(),
   tag: z.string().optional(),
-  status: z.enum(["draft", "published"]),
+  status: z.enum(["draft", "published"]).default("draft"),
   cover: z.string().optional(),
   price: z.string().optional(),
   original: z.string().optional(),
@@ -75,9 +75,10 @@ export const CourseSchema = z.object({
 
 export const AboutSchema = z.object({
   key: z.literal("about"),
-  title: z.string(),
+  title: z.string().min(1),
   excerpt: z.string().optional(),
   cover: z.string().optional(),
+  updatedAt: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
 });
