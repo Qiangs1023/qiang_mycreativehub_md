@@ -19,100 +19,34 @@
 
 ## 📝 内容发布工作流
 
-你可以完全在本地的代码编辑器（如 VS Code / Trae）中完成所有内容的发布和管理。
+所有内容都通过飞书多维表格管理。本项目共 5 张表（base_token `IjLnbCNkIaaJvjsEbAjc8XiEnYb`）：
 
-所有的内容都以 Markdown (`.md`) 格式存放在 `src/content/` 目录下：
-- `src/content/work/` - 产品与项目
-- `src/content/writing/` - 博客文章
-- `src/content/videos/` - 视频内容
-- `src/content/courses/` - 课程展示
-- `src/content/about/` - 关于页面（单文件 `about.md`）
-- `src/content/news/` - AI 资讯（RSS 自动拉取，无需手动编辑）
+- **writings** — 博客文章
+- **works** — 产品与项目
+- **videos** — 视频内容
+- **courses** — 课程展示
+- **abouts** — 关于页面（单条记录）
 
-### 1. 发布一篇文章 (Writing)
+### 工作流
 
-在 `src/content/writing/` 目录下新建一个 `.md` 文件，例如 `my-new-post.md`：
+1. 在飞书多维表格编辑/新增一条记录
+2. 等待 GitHub Actions 自动同步（每 30 分钟）或手动触发
+3. 同步脚本自动写入 `data/*.json` + 下载附件到 `public/uploads/`
+4. 下一次站点构建读取新数据并部署到 GitHub Pages
 
-```markdown
----
-title: "我的新文章标题"
-date: "2024-05-01"
-tag: "思考"
-excerpt: "这是一段关于文章内容的简短摘要..."
-readTime: "5 min"
----
-
-这里是文章的正文内容，支持**Markdown**语法...
-```
-
-### 2. 发布一个课程 (Courses)并链接到独立销售页
-
-在 `src/content/courses/` 目录下新建 `.md` 文件，**注意 `link` 字段**：
-
-```markdown
----
-title: "独立开发全栈实战营"
-excerpt: "从零到一教你如何用现代技术栈构建并发布自己的 SaaS 产品。"
-price: "¥399"
-link: "https://你的服务器域名.com/buy/indie-dev-bootcamp"
-cta: "立即购买 ↗"
----
-
-课程的详细介绍...
-```
-*当配置了 `link` 字段后，前端页面上的按钮将自动变为外部跳转链接，指向你的课程销售系统。*
-
-### 3. 修改关于页面 (About)
-
-在 `src/content/about/about.md` 中编辑页面正文内容：
-
-```markdown
----
-title: "关于页面标题"
-excerpt: "页面简介..."
----
-
-## 第一段标题
-
-正文内容，支持 **Markdown** 语法...
-
-## 第二段标题
-
-更多内容...
-```
-
-> 注意：About 页面的左侧区域（Toolbox 技术栈标签）和右侧区域（订阅表单、社交链接）由 React 组件控制，如需修改这些部分请直接编辑 `src/routes/about.tsx`。
-
-### 4. AI 资讯页面 (News)
-
-News 页面会自动从订阅源拉取内容，无需手动维护：
-
-- **订阅源**：`https://ai.hubtoday.app/blog/index.xml`（何夕2077的 AI 资讯）
-- **数据文件**：`src/content/news/rss-data.json`（由脚本自动生成）
-- **更新时间**：每次构建时自动拉取最新内容；GitHub Actions 每日凌晨 3:30 自动构建并部署
-
-**手动触发更新**
+### 本地预览
 
 ```bash
-npm run fetch-rss
+FEISHU_APP_ID=... FEISHU_APP_SECRET=... \
+FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
+FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8 \
+FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts \
+npm run sync:feishu
+
+npm run dev
 ```
 
-**修改订阅源**
-
-编辑 `scripts/fetch-rss.mjs`，修改顶部的 `RSS_URL` 变量：
-
-```js
-const RSS_URL = "https://你的订阅源地址/index.xml";
-```
-
-然后运行：
-
-```bash
-npm run fetch-rss
-npm run build
-```
-
----
+详细的 Secrets 配置见末尾的「飞书 Bitable 内容同步」章节。
 
 ## 📬 邮箱订阅功能 (Buttondown)
 
