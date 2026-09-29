@@ -7,7 +7,7 @@
       "publishedAt": "1777996800000",
       "tag": "SaaS · 进行中",
       "status": "active",
-      "cover": "/uploads/works/digital-wild-customer-service/znkf_Admin.jpg",
+      "cover": "uploads/works/digital-wild-customer-service/znkf_Admin.jpg",
       "stack": [
         "TypeScript",
         "Next.js",
@@ -26,7 +26,7 @@
       "publishedAt": "1778342400000",
       "tag": "个人网站",
       "status": "active",
-      "cover": "/uploads/works/digital-wild-site/szky_site02.jpg",
+      "cover": "uploads/works/digital-wild-site/szky_site02.jpg",
       "stack": [
         "TypeScript",
         "Next.js",
@@ -47,7 +47,7 @@
       "publishedAt": "1778342400000",
       "tag": "SaaS · 进行中",
       "status": "active",
-      "cover": "/uploads/works/finance-crm/image 20260510111054.jpg",
+      "cover": "uploads/works/finance-crm/image 20260510111054.jpg",
       "stack": [
         "PostgreSQL",
         "Python"
