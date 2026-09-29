@@ -1,1 +1,55 @@
-{ "videos": [] }
+{
+  "videos": [
+    {
+      "slug": "1095-days",
+      "title": "我做独立开发的 1095 天",
+      "excerpt": "三年时间，11 个失败项目，两次差点放弃，和最后做对的几件事。这是一段非常诚实的复盘。",
+      "date": "1744214400000",
+      "publishedAt": "1744214400000",
+      "status": "published",
+      "cover": "/uploads/videos/1095-days/video-1.jpg",
+      "platform": "B站",
+      "duration": "28:14",
+      "views": "32 万播放",
+      "videoUrl": "https://www.bilibili.com/video/example",
+      "bodyMarkdown": "## 这支视频讲什么\n\n- **0:00** 我为什么离开大厂\n- **3:40** 第一年：所有项目都失败的真实原因\n- **9:12** 第二年：第一笔 $87 的故事\n- **15:30** 第三年：从 $87 到 $10k MRR\n- **22:00** 我现在还焦虑的事情\n\n## 视频里没讲完的\n\n如果你只想看一段，看 15:30。\n那是我第一次意识到我可以靠这件事活下去的瞬间。\n背后的全部数据我整理在了下面这篇文章里。",
+      "bodyHtml": "<h2>这支视频讲什么</h2>\n<ul>\n<li><strong>0:00</strong> 我为什么离开大厂</li>\n<li><strong>3:40</strong> 第一年：所有项目都失败的真实原因</li>\n<li><strong>9:12</strong> 第二年：第一笔 $87 的故事</li>\n<li><strong>15:30</strong> 第三年：从 $87 到 $10k MRR</li>\n<li><strong>22:00</strong> 我现在还焦虑的事情</li>\n</ul>\n<h2>视频里没讲完的</h2>\n<p>如果你只想看一段，看 15:30。\n那是我第一次意识到我可以靠这件事活下去的瞬间。\n背后的全部数据我整理在了下面这篇文章里。</p>\n",
+      "featured": false,
+      "order": 0
+    },
+    {
+      "slug": "cursor-saas-demo",
+      "title": "用 Cursor 一天做完一个 SaaS Demo",
+      "excerpt": "全程录屏，没有快剪。看一个真实的 1-day MVP 是怎么做出来的。",
+      "date": "1740153600000",
+      "publishedAt": "1740153600000",
+      "status": "published",
+      "cover": "/uploads/videos/cursor-saas-demo/video-1.jpg",
+      "platform": "B站",
+      "duration": "18:30",
+      "views": "12 万播放",
+      "videoUrl": "https://www.bilibili.com/video/example2",
+      "bodyMarkdown": "## 实验的目的\n\n我想看看：用 AI 编程工具，独立开发者一天能走多远？\n\n## 视频结构\n\n- **0:00** 想法挑选：从 5 个候选里选一个\n- **3:00** 落地页 + 邮件订阅\n- **8:00** 用户登录与数据库\n- **13:00** 核心功能\n- **16:00** 部署上线\n\n## 真实数据\n\n视频里的项目我后来真的运营了。\n3 周之内拿到了 18 个付费用户。\n不是因为它做得有多好，而是因为它解决了一个我自己每天都会遇到的问题。",
+      "bodyHtml": "<h2>实验的目的</h2>\n<p>我想看看：用 AI 编程工具，独立开发者一天能走多远？</p>\n<h2>视频结构</h2>\n<ul>\n<li><strong>0:00</strong> 想法挑选：从 5 个候选里选一个</li>\n<li><strong>3:00</strong> 落地页 + 邮件订阅</li>\n<li><strong>8:00</strong> 用户登录与数据库</li>\n<li><strong>13:00</strong> 核心功能</li>\n<li><strong>16:00</strong> 部署上线</li>\n</ul>\n<h2>真实数据</h2>\n<p>视频里的项目我后来真的运营了。\n3 周之内拿到了 18 个付费用户。\n不是因为它做得有多好，而是因为它解决了一个我自己每天都会遇到的问题。</p>\n",
+      "featured": false,
+      "order": 0
+    },
+    {
+      "slug": "morning-routine",
+      "title": "我的工作流：早 5 点到下午 2 点",
+      "excerpt": "我的一天，没有花哨的 setup，没有\"高产秘诀\"。只是一个适合我自己的节奏。",
+      "date": "1741708800000",
+      "publishedAt": "1741708800000",
+      "status": "published",
+      "cover": "/uploads/videos/morning-routine/video-2.jpg",
+      "platform": "YouTube",
+      "duration": "11:42",
+      "views": "8.4 万播放",
+      "videoUrl": "https://www.youtube.com/watch?v=example",
+      "bodyMarkdown": "## 章节\n\n- **0:00** 早晨 5:00：我为什么早起\n- **2:30** 第一个小时：什么都不做\n- **4:10** 深度工作时间块（5:30 - 9:00）\n- **6:50** 中段：邮件和会议\n- **9:00** 收工后的下午是我的：散步、看书、什么都不做\n\n## 工具\n\n- 主力机：MacBook Air M2\n- 时间块：纸质笔记本\n- 不用：Slack、抖音、和任何会推送的东西",
+      "bodyHtml": "<h2>章节</h2>\n<ul>\n<li><strong>0:00</strong> 早晨 5:00：我为什么早起</li>\n<li><strong>2:30</strong> 第一个小时：什么都不做</li>\n<li><strong>4:10</strong> 深度工作时间块（5:30 - 9:00）</li>\n<li><strong>6:50</strong> 中段：邮件和会议</li>\n<li><strong>9:00</strong> 收工后的下午是我的：散步、看书、什么都不做</li>\n</ul>\n<h2>工具</h2>\n<ul>\n<li>主力机：MacBook Air M2</li>\n<li>时间块：纸质笔记本</li>\n<li>不用：Slack、抖音、和任何会推送的东西</li>\n</ul>\n",
+      "featured": false,
+      "order": 0
+    }
+  ]
+}

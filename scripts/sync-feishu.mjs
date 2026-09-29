@@ -111,6 +111,13 @@ export function normalizeWriting(record) {
   };
 }
 
+function extractUrl(field) {
+  if (!field) return undefined;
+  if (typeof field === "string") return field;
+  if (typeof field === "object") return field.link ?? field.url ?? field.text;
+  return undefined;
+}
+
 export function normalizeWork(record) {
   const f = record.fields;
   const slug = f.slug;
@@ -125,7 +132,7 @@ export function normalizeWork(record) {
     status: f.status === "active" ? "active" : "archived",
     cover: cover ? `/uploads/works/${slug}/${cover.name}` : undefined,
     stack: f.stack ?? [],
-    link: f.link,
+    link: extractUrl(f.link),
     bodyMarkdown: pickLocalized(f, "body").zh || "",
     bodyHtml: renderMarkdown(pickLocalized(f, "body").zh || ""),
     featured: Boolean(f.featured),
@@ -149,7 +156,7 @@ export function normalizeVideo(record) {
     platform: f.platform,
     duration: f.duration,
     views: f.views,
-    videoUrl: f.videoUrl,
+    videoUrl: extractUrl(f.videoUrl),
     bodyMarkdown: pickLocalized(f, "body").zh || "",
     bodyHtml: renderMarkdown(pickLocalized(f, "body").zh || ""),
     featured: Boolean(f.featured),
@@ -177,7 +184,7 @@ export function normalizeCourse(record) {
     primary: Boolean(f.primary),
     badge: f.badge,
     cta: f.cta,
-    url: f.url,
+    url: extractUrl(f.url),
     bodyMarkdown: pickLocalized(f, "body").zh || "",
     bodyHtml: renderMarkdown(pickLocalized(f, "body").zh || ""),
     featured: Boolean(f.featured),
@@ -233,14 +240,14 @@ export async function downloadAttachment(url, outPath) {
   fs.writeFileSync(outPath, buf);
 }
 
-export async function syncAttachments(records, slug, kind) {
-  const attachmentField = { writings: "cover", works: "cover", videos: "cover", courses: "cover" }[kind];
-  if (!attachmentField) return;
+export async function syncAttachments(records, kind) {
+  const attachmentField = "cover";
   const tasks = [];
   for (const r of records) {
     const att = r.fields[attachmentField]?.[0];
     if (!att?.tmp_url) continue;
-    const out = path.join(ROOT, "public", "uploads", kind, slug, att.file_name);
+    const slug = r.fields.slug || kind;
+    const out = path.join(ROOT, "public", "uploads", kind, slug, att.name ?? att.file_name);
     tasks.push(
       downloadAttachment(att.tmp_url, out).catch((err) =>
         console.warn(`attachment ${slug}: ${err.message}`),
@@ -266,10 +273,10 @@ export async function main() {
   const courses = courseRecords.map(normalizeCourse).filter((c) => c.status === "published");
   const about = normalizeAbout(aboutRecords);
 
-  await syncAttachments(articleRecords, "writings", "writings");
-  await syncAttachments(workRecords, "works", "works");
-  await syncAttachments(videoRecords, "videos", "videos");
-  await syncAttachments(courseRecords, "courses", "courses");
+  await syncAttachments(articleRecords, "writings");
+  await syncAttachments(workRecords, "works");
+  await syncAttachments(videoRecords, "videos");
+  await syncAttachments(courseRecords, "courses");
 
   writeIfChanged(path.join(ROOT, "data/writings.json"), { writings });
   writeIfChanged(path.join(ROOT, "data/works.json"), { works });
