@@ -3,25 +3,64 @@ on:
   schedule:
     - cron: "*/30 * * * *"
   workflow_dispatch:
+
+permissions:
+  contents: write   # git-auto-commit 推送数据变更
+  pages: write      # 部署 GitHub Pages
+  id-token: write   # Pages 部署 OIDC
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: npm
+
       - name: Install
         run: npm ci
-      - run: node scripts/sync-feishu.mjs
+
+      - name: Sync Feishu data
+        run: node scripts/sync-feishu.mjs
         env:
           FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
           FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
           FEISHU_APP_TOKEN: ${{ secrets.FEISHU_APP_TOKEN }}
           FEISHU_TABLE_IDS: ${{ secrets.FEISHU_TABLE_IDS }}
           FEISHU_TABLE_KINDS: ${{ secrets.FEISHU_TABLE_KINDS }}
-      - uses: stefanzweifel/git-auto-commit-action@v5
+
+      - name: Commit data changes
+        id: sync_commit
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: sync from feishu bitable"
           file_pattern: "data/*.json public/uploads/**/*"
+
+      - name: Build
+        if: steps.sync_commit.outputs.changes_detected == 'true'
+        run: npm run build
+
+      - name: Prepare SPA fallback
+        if: steps.sync_commit.outputs.changes_detected == 'true'
+        run: cp dist/client/index.html dist/client/404.html
+
+      - name: Upload
+        if: steps.sync_commit.outputs.changes_detected == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/client
+
+      - name: Deploy
+        id: deployment
+        if: steps.sync_commit.outputs.changes_detected == 'true'
+        uses: actions/deploy-pages@v4
