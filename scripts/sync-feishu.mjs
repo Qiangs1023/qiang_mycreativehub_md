@@ -166,6 +166,21 @@ export function normalizeVideo(record) {
   };
 }
 
+export function normalizeNews(record) {
+  const f = record.fields;
+  const slug = f.slug;
+  return {
+    slug,
+    title: pickLocalized(f, "title").zh || slug,
+    date: f.date ? String(f.date) : "",
+    url: extractUrl(f.url),
+    bodyMarkdown: pickLocalized(f, "body").zh || "",
+    bodyHtml: renderMarkdown(pickLocalized(f, "body").zh || ""),
+    status: f.status === "published" ? "published" : "draft",
+    updatedAt: f.updatedAt ? String(f.updatedAt) : undefined,
+  };
+}
+
 export function normalizeCourse(record) {
   const f = record.fields;
   const slug = f.slug;
@@ -268,12 +283,15 @@ export async function main() {
   const videoRecords = TABLE_MAP.videos ? await listRecords(token, TABLE_MAP.videos) : [];
   const courseRecords = TABLE_MAP.courses ? await listRecords(token, TABLE_MAP.courses) : [];
   const aboutRecords = TABLE_MAP.abouts ? await listRecords(token, TABLE_MAP.abouts) : [];
+  const newsRecords = TABLE_MAP.news ? await listRecords(token, TABLE_MAP.news) : [];
 
-  const writings = articleRecords.map(normalizeWriting).filter((w) => w.status === "published");
-  const works = workRecords.map(normalizeWork).filter((w) => w.status === "active");
-  const videos = videoRecords.map(normalizeVideo).filter((v) => v.status === "published");
-  const courses = courseRecords.map(normalizeCourse).filter((c) => c.status === "published");
+  const hasSlug = (r) => Boolean(r.slug);
+  const writings = articleRecords.map(normalizeWriting).filter((w) => w.status === "published" && hasSlug(w));
+  const works = workRecords.map(normalizeWork).filter((w) => w.status === "active" && hasSlug(w));
+  const videos = videoRecords.map(normalizeVideo).filter((v) => v.status === "published" && hasSlug(v));
+  const courses = courseRecords.map(normalizeCourse).filter((c) => c.status === "published" && hasSlug(c));
   const about = normalizeAbout(aboutRecords);
+  const news = newsRecords.map(normalizeNews).filter((n) => n.status === "published" && n.slug);
 
   await syncAttachments(articleRecords, "writings");
   await syncAttachments(workRecords, "works");
@@ -285,6 +303,9 @@ export async function main() {
   writeIfChanged(path.join(ROOT, "data/videos.json"), { videos });
   writeIfChanged(path.join(ROOT, "data/courses.json"), { courses });
   writeIfChanged(path.join(ROOT, "data/about.json"), about);
+  if (TABLE_MAP.news) {
+    writeIfChanged(path.join(ROOT, "data/news.json"), { news });
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

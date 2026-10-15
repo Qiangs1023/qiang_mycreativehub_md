@@ -16,6 +16,7 @@ const {
   normalizeVideo,
   normalizeCourse,
   normalizeAbout,
+  normalizeNews,
 } = await import("./sync-feishu.mjs");
 
 test("pickLocalized prefers _zh, falls back to _en", () => {
@@ -143,4 +144,24 @@ test("normalizeAbout includes updatedAt field", () => {
   ];
   const result = normalizeAbout(records);
   assert.equal(result.updatedAt, "2026-05-01");
+});
+test("normalizeNews extracts url and markdown body", () => {
+  const record = {
+    fields: {
+      slug: "weekly-update",
+      title_zh: "本周动态",
+      date: "1760486400000",
+      url: "https://example.com/post",
+      body_zh: "内容正文",
+      status: "published",
+      updatedAt: "1760486400000",
+    },
+  };
+  const result = normalizeNews(record);
+  assert.equal(result.slug, "weekly-update");
+  assert.equal(result.title, "本周动态");
+  assert.equal(result.url, "https://example.com/post");
+  assert.equal(result.bodyMarkdown, "内容正文");
+  assert.equal(result.status, "published");
+  assert.equal(result.updatedAt, "1760486400000");
 });
