@@ -31,7 +31,7 @@ export async function getToken() {
     }),
   });
   const data = await res.json();
-  if (data.code !== 0) throw new Error(`token error: ${data.msg}`);
+  if (data.code !== 0) throw new Error(`token error: code=${data.code} msg=${data.msg}`);
   cachedToken = data.tenant_access_token;
   tokenExpiresAt = now + (data.expire - 60) * 1000;
   return cachedToken;
@@ -48,8 +48,10 @@ export async function listRecords(token, tableId) {
     if (pageToken) url.searchParams.set("page_token", pageToken);
     const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
     const json = await res.json();
-    if (json.code !== 0) throw new Error(`list records: ${json.msg}`);
-    records.push(...json.data.items);
+    if (json.code !== 0) {
+      throw new Error(`list records failed: tableId=${tableId} code=${json.code} msg=${json.msg}`);
+    }
+    records.push(...(json.data.items ?? []));
     if (!json.data.has_more) break;
     pageToken = json.data.page_token;
   }
