@@ -110,6 +110,29 @@
       "bodyHtml": "<p>下面这些模式我每周至少用 5 次。\n按使用频率从高到低排列。</p>\n<h2>1. <code>as const</code> + <code>typeof</code> 取联合类型</h2>\n<pre><code class=\"language-ts\">const ROLES = [&quot;admin&quot;, &quot;editor&quot;, &quot;viewer&quot;] as const;\ntype Role = typeof ROLES[number]; // &quot;admin&quot; | &quot;editor&quot; | &quot;viewer&quot;\n</code></pre>\n<p>避免一份枚举写两遍。</p>\n<h2>2. 区分判别联合（discriminated union）</h2>\n<pre><code class=\"language-ts\">type Result =\n  | { ok: true; data: User }\n  | { ok: false; error: string };\n</code></pre>\n<p>收窄之后 TS 自己知道你能访问哪些字段。</p>\n<h2>3. 工具类型 <code>Pick</code> + <code>Omit</code></h2>\n<pre><code class=\"language-ts\">type PublicUser = Omit&lt;User, &quot;passwordHash&quot; | &quot;email&quot;&gt;;\n</code></pre>\n<p>序列化前的好朋友。</p>\n<h2>4. 函数重载</h2>\n<pre><code class=\"language-ts\">function get(id: string): User;\nfunction get(ids: string[]): User[];\nfunction get(idOrIds: string | string[]) { /* ... */ }\n</code></pre>\n<h2>5. <code>satisfies</code></h2>\n<pre><code class=\"language-ts\">const config = {\n  retries: 3,\n  baseUrl: &quot;https://api.example.com&quot;,\n} satisfies AppConfig;\n</code></pre>\n<p>比 <code>: AppConfig</code> 强：保留具体类型，同时检查兼容性。</p>\n<h2>6. <code>NonNullable</code></h2>\n<pre><code class=\"language-ts\">type DefinitelyUser = NonNullable&lt;User | null | undefined&gt;;\n</code></pre>\n<h2>7. branded type（避免字符串混用）</h2>\n<pre><code class=\"language-ts\">type UserId = string &amp; { __brand: &quot;UserId&quot; };\ntype OrderId = string &amp; { __brand: &quot;OrderId&quot; };\n</code></pre>\n<p>防止把订单号传到用户接口里。</p>\n",
       "status": "published",
       "featured": false
+    },
+    {
+      "slug": "text1",
+      "title": "测试",
+      "date": "",
+      "publishedAt": "1791993600000",
+      "tags": [],
+      "bodyMarkdown": "",
+      "bodyHtml": "",
+      "status": "published",
+      "featured": false
+    },
+    {
+      "slug": "text2",
+      "title": "测试2",
+      "excerpt": "  的沙发沙发",
+      "date": "",
+      "publishedAt": "1791993600000",
+      "tags": [],
+      "bodyMarkdown": "电风扇",
+      "bodyHtml": "<p>电风扇</p>\n",
+      "status": "published",
+      "featured": false
     }
   ]
 }
