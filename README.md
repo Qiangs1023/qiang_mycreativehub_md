@@ -19,13 +19,14 @@
 
 ## 📝 内容发布工作流
 
-所有内容都通过飞书多维表格管理。本项目共 5 张表（base_token `IjLnbCNkIaaJvjsEbAjc8XiEnYb`）：
+所有内容都通过飞书多维表格管理。本项目共 6 张表（base_token `IjLnbCNkIaaJvjsEbAjc8XiEnYb`）：
 
 - **writings** — 博客文章
 - **works** — 产品与项目
 - **videos** — 视频内容
 - **courses** — 课程展示
 - **abouts** — 关于页面（单条记录）
+- **news** — 动态/短内容（同步到 `data/news.json`，站点展示为独立功能待接入）
 
 ### 工作流
 
@@ -39,8 +40,8 @@
 ```bash
 FEISHU_APP_ID=... FEISHU_APP_SECRET=... \
 FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
-FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8 \
-FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts \
+FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8,tblDXtddeUcpgRUq \
+FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts,news \
 npm run sync:feishu
 
 npm run dev
@@ -170,8 +171,8 @@ npm run build
 FEISHU_APP_ID=<your_app_id> \
 FEISHU_APP_SECRET=<your_app_secret> \
 FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
-FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8 \
-FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts \
+FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8,tblDXtddeUcpgRUq \
+FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts,news \
 npm run sync:feishu
 
 npm run dev
