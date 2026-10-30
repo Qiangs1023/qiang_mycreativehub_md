@@ -165,3 +165,9 @@ test("normalizeNews extracts url and markdown body", () => {
   assert.equal(result.status, "published");
   assert.equal(result.updatedAt, "1760486400000");
 });
+
+test("Feishu table map ignores writings because Markdown is authoritative", async () => {
+  const { tableMap } = await import("./sync-feishu.mjs");
+  assert.equal(tableMap.writings, undefined);
+  assert.equal(tableMap.works, "tbl2");
+});

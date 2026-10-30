@@ -274,36 +274,34 @@ export async function syncAttachments(records, kind) {
   await Promise.all(tasks);
 }
 
-const TABLE_MAP = Object.fromEntries(TABLE_KINDS.map((kind, i) => [kind, TABLE_IDS[i]]));
+export const tableMap = Object.fromEntries(
+  TABLE_KINDS.map((kind, index) => [kind, TABLE_IDS[index]]).filter(([kind]) => kind !== "writings"),
+);
 
 export async function main() {
   const token = await getToken();
-  const articleRecords = TABLE_MAP.writings ? await listRecords(token, TABLE_MAP.writings) : [];
-  const workRecords = TABLE_MAP.works ? await listRecords(token, TABLE_MAP.works) : [];
-  const videoRecords = TABLE_MAP.videos ? await listRecords(token, TABLE_MAP.videos) : [];
-  const courseRecords = TABLE_MAP.courses ? await listRecords(token, TABLE_MAP.courses) : [];
-  const aboutRecords = TABLE_MAP.abouts ? await listRecords(token, TABLE_MAP.abouts) : [];
-  const newsRecords = TABLE_MAP.news ? await listRecords(token, TABLE_MAP.news) : [];
+  const workRecords = tableMap.works ? await listRecords(token, tableMap.works) : [];
+  const videoRecords = tableMap.videos ? await listRecords(token, tableMap.videos) : [];
+  const courseRecords = tableMap.courses ? await listRecords(token, tableMap.courses) : [];
+  const aboutRecords = tableMap.abouts ? await listRecords(token, tableMap.abouts) : [];
+  const newsRecords = tableMap.news ? await listRecords(token, tableMap.news) : [];
 
   const hasSlug = (r) => Boolean(r.slug);
-  const writings = articleRecords.map(normalizeWriting).filter((w) => w.status === "published" && hasSlug(w));
   const works = workRecords.map(normalizeWork).filter((w) => w.status === "active" && hasSlug(w));
   const videos = videoRecords.map(normalizeVideo).filter((v) => v.status === "published" && hasSlug(v));
   const courses = courseRecords.map(normalizeCourse).filter((c) => c.status === "published" && hasSlug(c));
   const about = normalizeAbout(aboutRecords);
   const news = newsRecords.map(normalizeNews).filter((n) => n.status === "published" && n.slug);
 
-  await syncAttachments(articleRecords, "writings");
   await syncAttachments(workRecords, "works");
   await syncAttachments(videoRecords, "videos");
   await syncAttachments(courseRecords, "courses");
 
-  writeIfChanged(path.join(ROOT, "data/writings.json"), { writings });
   writeIfChanged(path.join(ROOT, "data/works.json"), { works });
   writeIfChanged(path.join(ROOT, "data/videos.json"), { videos });
   writeIfChanged(path.join(ROOT, "data/courses.json"), { courses });
   writeIfChanged(path.join(ROOT, "data/about.json"), about);
-  if (TABLE_MAP.news) {
+  if (tableMap.news) {
     writeIfChanged(path.join(ROOT, "data/news.json"), { news });
   }
 }
