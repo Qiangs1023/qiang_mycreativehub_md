@@ -24,11 +24,11 @@ const coursesArr: Course[] = CourseSchema.array().parse(coursesData.courses);
 const aboutObj: About = AboutSchema.parse(aboutData);
 
 export const byDateDesc = (
-  a: { publishedAt?: string; date?: string },
-  b: { publishedAt?: string; date?: string },
+  a: { publishedAt?: string; updatedAt?: string; date?: string },
+  b: { publishedAt?: string; updatedAt?: string; date?: string },
 ) => {
-  const av = a.publishedAt ?? a.date ?? "";
-  const bv = b.publishedAt ?? b.date ?? "";
+  const av = a.publishedAt ?? a.updatedAt ?? a.date ?? "";
+  const bv = b.publishedAt ?? b.updatedAt ?? b.date ?? "";
   return bv.localeCompare(av);
 };
 
@@ -61,16 +61,23 @@ export const findPublishedWriting = <T extends { slug: string; status: string }>
   slug: string,
 ): T | undefined => writings.find((w) => w.status === "published" && w.slug === slug);
 
+export const findEntryByStatus = <T extends { slug: string; status: string }>(
+  entries: T[],
+  slug: string,
+  allowedStatuses: ReadonlySet<string>,
+): T | undefined => entries.find((item) => allowedStatuses.has(item.status) && item.slug === slug);
+
 export const findWriting = (slug: string): Writing | undefined =>
   findPublishedWriting(writingsArr, slug);
 
-export const findWork = (slug: string): Work | undefined => worksArr.find((w) => w.slug === slug);
+export const findWork = (slug: string): Work | undefined =>
+  findEntryByStatus(activeWorks, slug, new Set(["active"]));
 
 export const findVideo = (slug: string): Video | undefined =>
-  videosArr.find((v) => v.slug === slug);
+  findEntryByStatus(publishedVideos, slug, new Set(["published"]));
 
 export const findCourse = (slug: string): Course | undefined =>
-  coursesArr.find((c) => c.slug === slug);
+  findEntryByStatus(publishedCourses, slug, new Set(["published"]));
 
 export const neighbours = <T extends { slug: string }>(collection: T[], slug: string) => {
   const i = collection.findIndex((e) => e.slug === slug);

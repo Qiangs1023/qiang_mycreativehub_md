@@ -4,11 +4,16 @@ import assert from "node:assert/strict";
 import {
   loadWritings,
   findWriting,
+  findWork,
+  findVideo,
+  findCourse,
   findPublishedWriting,
+  findEntryByStatus,
   byDateDesc,
   byOrderAsc,
   neighbours,
 } from "./data";
+import { loadNews } from "./news";
 
 test("loadWritings returns array from placeholder", () => {
   const writings = loadWritings();
@@ -28,6 +33,45 @@ test("findPublishedWriting rejects draft and archived writings", () => {
   assert.equal(findPublishedWriting(all, "draft-post"), undefined);
   assert.equal(findPublishedWriting(all, "archived-post"), undefined);
   assert.equal(findPublishedWriting(all, "published-post")?.slug, "published-post");
+});
+
+test("loadNews returns only published news", () => {
+  const news = loadNews();
+  assert.ok(Array.isArray(news));
+  assert.ok(news.every((item) => item.status === "published"));
+});
+
+test("production detail lookups return visible entries", () => {
+  assert.equal(findWork("digital-wild-site")?.status, "active");
+  assert.equal(findVideo("1095-days")?.status, "published");
+  assert.equal(findCourse("obsidian-agent")?.status, "published");
+});
+
+test("findEntryByStatus enforces each collection visibility rule", () => {
+  const entries = [
+    { slug: "archived-work", status: "archived" },
+    { slug: "active-work", status: "active" },
+    { slug: "draft-video", status: "draft" },
+    { slug: "published-video", status: "published" },
+    { slug: "draft-course", status: "draft" },
+    { slug: "published-course", status: "published" },
+  ] as const;
+
+  const activeOnly = new Set(["active"]);
+  const publishedOnly = new Set(["published"]);
+
+  assert.equal(findEntryByStatus(entries, "archived-work", activeOnly), undefined);
+  assert.equal(findEntryByStatus(entries, "active-work", activeOnly)?.slug, "active-work");
+  assert.equal(findEntryByStatus(entries, "draft-video", publishedOnly), undefined);
+  assert.equal(
+    findEntryByStatus(entries, "published-video", publishedOnly)?.slug,
+    "published-video",
+  );
+  assert.equal(findEntryByStatus(entries, "draft-course", publishedOnly), undefined);
+  assert.equal(
+    findEntryByStatus(entries, "published-course", publishedOnly)?.slug,
+    "published-course",
+  );
 });
 
 test("byDateDesc sorts by publishedAt desc, falls back to date", () => {
