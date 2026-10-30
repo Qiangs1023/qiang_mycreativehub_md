@@ -4,19 +4,16 @@ import worksData from "@data/works.json";
 import videosData from "@data/videos.json";
 import coursesData from "@data/courses.json";
 import aboutData from "@data/about.json";
-import newsData from "@data/news.json";
 import {
   WritingSchema,
   WorkSchema,
   VideoSchema,
   CourseSchema,
-  NewsSchema,
   AboutSchema,
   type Writing,
   type Work,
   type Video,
   type Course,
-  type News,
   type About,
 } from "@/schemas/content";
 
@@ -24,7 +21,6 @@ const writingsArr: Writing[] = WritingSchema.array().parse(writingsData.writings
 const worksArr: Work[] = WorkSchema.array().parse(worksData.works);
 const videosArr: Video[] = VideoSchema.array().parse(videosData.videos);
 const coursesArr: Course[] = CourseSchema.array().parse(coursesData.courses);
-const newsArr: News[] = NewsSchema.array().parse(newsData.news);
 const aboutObj: About = AboutSchema.parse(aboutData);
 
 export const byDateDesc = (
@@ -50,8 +46,6 @@ const publishedCourses: Course[] = coursesArr
   .filter((c) => c.status === "published")
   .sort(byOrderAsc);
 
-const publishedNews: News[] = newsArr.filter((n) => n.status === "published").sort(byDateDesc);
-
 export const loadWritings = (): Writing[] => publishedWritings;
 
 export const loadWorks = (): Work[] => activeWorks;
@@ -59,8 +53,6 @@ export const loadWorks = (): Work[] => activeWorks;
 export const loadVideos = (): Video[] => publishedVideos;
 
 export const loadCourses = (): Course[] => publishedCourses;
-
-export const loadNews = (): News[] => publishedNews;
 
 export const loadAbout = (): About => aboutObj;
 

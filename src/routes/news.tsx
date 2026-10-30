@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { loadNews } from "@/lib/data";
+import { loadNews } from "@/lib/news";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();

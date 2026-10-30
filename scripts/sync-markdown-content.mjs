@@ -59,6 +59,8 @@ const ENTRY_FIELDS = {
     "tags",
     "readTime",
     "cover",
+    "bodyMarkdown",
+    "bodyHtml",
     "status",
     "featured",
   ],
@@ -73,6 +75,8 @@ const ENTRY_FIELDS = {
     "cover",
     "stack",
     "link",
+    "bodyMarkdown",
+    "bodyHtml",
     "featured",
     "order",
   ],
@@ -89,6 +93,9 @@ const ENTRY_FIELDS = {
     "duration",
     "views",
     "videoUrl",
+    "bodyMarkdown",
+    "bodyHtml",
+    "featured",
     "order",
   ],
   courses: [
@@ -108,9 +115,12 @@ const ENTRY_FIELDS = {
     "badge",
     "cta",
     "url",
+    "bodyMarkdown",
+    "bodyHtml",
+    "featured",
     "order",
   ],
-  news: ["slug", "title", "date", "updatedAt", "url", "status"],
+  news: ["slug", "title", "date", "url", "bodyMarkdown", "bodyHtml", "status", "updatedAt"],
 };
 
 const STRING_ARRAY_FIELDS = new Set(["tags", "stack", "features"]);
@@ -167,7 +177,13 @@ export function normalizeEntry(kind, data, markdown, sourceFile) {
 
   const entry = {};
   for (const field of fields) {
-    if (data[field] !== undefined) entry[field] = data[field];
+    if (field === "bodyMarkdown") {
+      entry.bodyMarkdown = markdown;
+    } else if (field === "bodyHtml") {
+      entry.bodyHtml = renderMarkdown(markdown);
+    } else if (data[field] !== undefined) {
+      entry[field] = data[field];
+    }
   }
   if (kind === "writings") entry.tags ??= [];
   if (kind === "works") {
@@ -183,12 +199,7 @@ export function normalizeEntry(kind, data, markdown, sourceFile) {
     entry.featured = data.featured === undefined ? false : data.featured;
   }
 
-  return {
-    ...entry,
-    bodyMarkdown: markdown,
-    bodyHtml: renderMarkdown(markdown),
-    sourceFile,
-  };
+  return { ...entry, sourceFile };
 }
 
 function isValidCalendarDate(value) {
@@ -394,9 +405,9 @@ export function loadAbout(contentDirectory) {
     title: parsed.data.title,
     excerpt: parsed.data.excerpt,
     cover: parsed.data.cover,
-    updatedAt: parsed.data.updatedAt,
     bodyMarkdown: parsed.markdown,
     bodyHtml: renderMarkdown(parsed.markdown),
+    updatedAt: parsed.data.updatedAt,
   };
 }
 
@@ -430,7 +441,12 @@ export function syncAll({ contentDirectory, publicDirectory, dataDirectory }) {
   const changed = [];
   for (const [kind, { entries, config }] of Object.entries(collections)) {
     const sorted = entries
-      .sort((a, b) => String(a.slug).localeCompare(String(b.slug)))
+      .sort((a, b) => {
+        const orderA = typeof a.order === "number" ? a.order : 0;
+        const orderB = typeof b.order === "number" ? b.order : 0;
+        if (orderA !== orderB) return orderA - orderB;
+        return String(a.slug).localeCompare(String(b.slug));
+      })
       .map(publicEntry);
     const outputFile = path.join(dataDirectory, config.output);
     if (writeJsonIfChanged(outputFile, { [config.property]: sorted })) changed.push(config.output);

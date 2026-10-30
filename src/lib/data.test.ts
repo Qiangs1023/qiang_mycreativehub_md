@@ -3,7 +3,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   loadWritings,
-  loadNews,
   findWriting,
   findWork,
   findVideo,
@@ -14,6 +13,7 @@ import {
   byOrderAsc,
   neighbours,
 } from "./data";
+import { loadNews } from "./news";
 
 test("loadWritings returns array from placeholder", () => {
   const writings = loadWritings();
