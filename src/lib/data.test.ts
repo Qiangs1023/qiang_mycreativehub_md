@@ -1,7 +1,14 @@
 // src/lib/data.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { loadWritings, findWriting, byDateDesc, byOrderAsc, neighbours } from "./data";
+import {
+  loadWritings,
+  findWriting,
+  findPublishedWriting,
+  byDateDesc,
+  byOrderAsc,
+  neighbours,
+} from "./data";
 
 test("loadWritings returns array from placeholder", () => {
   const writings = loadWritings();
@@ -12,6 +19,17 @@ test("findWriting returns undefined for non-existent slug", () => {
   assert.equal(findWriting("non-existent"), undefined);
 });
 
+test("findPublishedWriting rejects draft and archived writings", () => {
+  const all = [
+    { slug: "draft-post", status: "draft" },
+    { slug: "archived-post", status: "archived" },
+    { slug: "published-post", status: "published" },
+  ] as const;
+  assert.equal(findPublishedWriting(all, "draft-post"), undefined);
+  assert.equal(findPublishedWriting(all, "archived-post"), undefined);
+  assert.equal(findPublishedWriting(all, "published-post")?.slug, "published-post");
+});
+
 test("byDateDesc sorts by publishedAt desc, falls back to date", () => {
   const items = [
     { slug: "a", date: "2025-01-01", publishedAt: "2025-06-01" },
@@ -19,7 +37,10 @@ test("byDateDesc sorts by publishedAt desc, falls back to date", () => {
     { slug: "c", date: "2025-02-01", publishedAt: undefined },
   ];
   const sorted = items.slice().sort(byDateDesc);
-  assert.deepEqual(sorted.map((i) => i.slug), ["a", "b", "c"]);
+  assert.deepEqual(
+    sorted.map((i) => i.slug),
+    ["a", "b", "c"],
+  );
 });
 
 test("byDateDesc handles missing publishedAt and date", () => {
@@ -31,7 +52,10 @@ test("byDateDesc handles missing publishedAt and date", () => {
 test("byOrderAsc sorts by order ascending", () => {
   const items = [{ order: 3 }, { order: 1 }, { order: 2 }];
   const sorted = items.slice().sort(byOrderAsc);
-  assert.deepEqual(sorted.map((i) => i.order), [1, 2, 3]);
+  assert.deepEqual(
+    sorted.map((i) => i.order),
+    [1, 2, 3],
+  );
 });
 
 test("neighbours returns undefined for missing slug", () => {

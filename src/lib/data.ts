@@ -23,7 +23,10 @@ const videosArr: Video[] = VideoSchema.array().parse(videosData.videos);
 const coursesArr: Course[] = CourseSchema.array().parse(coursesData.courses);
 const aboutObj: About = AboutSchema.parse(aboutData);
 
-export const byDateDesc = (a: { publishedAt?: string; date?: string }, b: { publishedAt?: string; date?: string }) => {
+export const byDateDesc = (
+  a: { publishedAt?: string; date?: string },
+  b: { publishedAt?: string; date?: string },
+) => {
   const av = a.publishedAt ?? a.date ?? "";
   const bv = b.publishedAt ?? b.date ?? "";
   return bv.localeCompare(av);
@@ -35,13 +38,9 @@ const publishedWritings: Writing[] = writingsArr
   .filter((w) => w.status === "published")
   .sort(byDateDesc);
 
-const activeWorks: Work[] = worksArr
-  .filter((w) => w.status === "active")
-  .sort(byOrderAsc);
+const activeWorks: Work[] = worksArr.filter((w) => w.status === "active").sort(byOrderAsc);
 
-const publishedVideos: Video[] = videosArr
-  .filter((v) => v.status === "published")
-  .sort(byDateDesc);
+const publishedVideos: Video[] = videosArr.filter((v) => v.status === "published").sort(byDateDesc);
 
 const publishedCourses: Course[] = coursesArr
   .filter((c) => c.status === "published")
@@ -57,11 +56,15 @@ export const loadCourses = (): Course[] => publishedCourses;
 
 export const loadAbout = (): About => aboutObj;
 
-export const findWriting = (slug: string): Writing | undefined =>
-  writingsArr.find((w) => w.slug === slug);
+export const findPublishedWriting = <T extends { slug: string; status: string }>(
+  writings: T[],
+  slug: string,
+): T | undefined => writings.find((w) => w.status === "published" && w.slug === slug);
 
-export const findWork = (slug: string): Work | undefined =>
-  worksArr.find((w) => w.slug === slug);
+export const findWriting = (slug: string): Writing | undefined =>
+  findPublishedWriting(writingsArr, slug);
+
+export const findWork = (slug: string): Work | undefined => worksArr.find((w) => w.slug === slug);
 
 export const findVideo = (slug: string): Video | undefined =>
   videosArr.find((v) => v.slug === slug);
