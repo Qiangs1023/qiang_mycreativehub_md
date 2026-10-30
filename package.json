@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "npm run sync:writings && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -13,7 +13,8 @@
     "fetch-rss": "node scripts/fetch-rss.mjs",
     "prebuild": "node scripts/fetch-rss.mjs",
     "sync:feishu": "node scripts/sync-feishu.mjs",
-    "test:sync": "node --test scripts/sync-feishu.test.mjs scripts/sync-feishu-io.test.mjs && node --import tsx --test src/lib/data.test.ts"
+    "test:sync": "node --test scripts/sync-markdown-writings.test.mjs scripts/sync-feishu.test.mjs scripts/sync-feishu-io.test.mjs && node --import tsx --test src/lib/data.test.ts",
+    "sync:writings": "node scripts/sync-markdown-writings.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -85,6 +86,7 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "fast-xml-parser": "^5.7.2",
     "globals": "^15.15.0",
+    "js-yaml": "^4.1.1",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",

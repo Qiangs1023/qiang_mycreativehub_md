@@ -7,8 +7,8 @@
 本项目采用了前端完全静态化、核心业务后端分离的架构设计。这种设计兼顾了**访问速度**、**零服务器成本**与未来的**商业变现扩展性**。
 
 - **主站展示（当前项目）**：
-  - **部署方案**：部署于 GitHub Pages (或其他纯静态托管服务如 Vercel/Netlify)。
-  - **内容来源**：纯本地 Markdown 文件，通过 Git 进行版本控制，支持本地无缝写作。
+  - **部署方案**：部署于 Cloudflare Pages；仓库同时保留 GitHub Pages 工作流作为旧部署路径。
+  - **内容来源**：博客文章使用本地 Markdown；作品、视频、课程、关于和动态继续从飞书多维表格同步。
   - **技术栈**：React, Vite, TanStack Router, Tailwind CSS, shadcn/ui。
 - **业务系统（未来计划）**：
   - **定位**：独立的“购买课程/付费订阅”页面系统。
@@ -19,35 +19,55 @@
 
 ## 📝 内容发布工作流
 
-所有内容都通过飞书多维表格管理。本项目共 6 张表（base_token `IjLnbCNkIaaJvjsEbAjc8XiEnYb`）：
+博客文章（writings）以本地 Markdown 为唯一来源，文件保存在 `/Users/qiang/Documents/Agent_Space/digiwild/业务/indie/qiang_mycreativehub_md/content/writings/<slug>.md`。其他内容继续由飞书多维表格管理：
 
-- **writings** — 博客文章
 - **works** — 产品与项目
 - **videos** — 视频内容
 - **courses** — 课程展示
 - **abouts** — 关于页面（单条记录）
 - **news** — 动态/短内容（同步到 `data/news.json`，站点展示为独立功能待接入）
 
-### 工作流
+### 新增或修改博客文章
 
-1. 在飞书多维表格编辑/新增一条记录
-2. 等待 GitHub Actions 自动同步（每 30 分钟）或手动触发
-3. 同步脚本自动写入 `data/*.json` + 下载附件到 `public/uploads/`
-4. 下一次站点构建读取新数据并部署到 GitHub Pages
+1. 在 `content/writings/` 新增 `<slug>.md`；文件名必须与 frontmatter 的 `slug` 一致。
+2. 填写 `slug`、`title`、`date`、`status` 四个必填字段。
+3. 只有 `status: published` 的文章会出现在文章列表和详情页；`draft` 与 `archived` 不会公开访问。
+4. 执行 `npm run sync:writings`，脚本会校验元数据、日期、slug、重复项、封面和正文图片，并重新生成 `data/writings.json`。
+5. 执行 `npm run test:sync` 和 `npm run build` 完成本地验证。
+6. 提交 Markdown 和生成的 `data/writings.json`；push 到 `main` 后触发 Cloudflare Pages 自动部署。
+
+示例：
+
+```md
+---
+slug: my-post
+title: 我的第一篇 Markdown 文章
+excerpt: 这是一篇示例文章。
+date: 2026-10-30
+publishedAt: 2026-10-30
+tag: 随笔
+tags:
+  - 独立开发
+readTime: 5 min
+cover: uploads/writings/my-post/cover.jpg
+status: published
+featured: false
+---
+
+## 正文
+
+这里写正文。Obsidian 图片可以用 `![[cover.png]]`，同步时会转换成 `/images/cover.png`。
+```
+
+本地图片必须存在于 `public/` 对应路径，外链使用 `https://`。同步失败时构建会失败，不会带着旧的 `data/writings.json` 继续发布。
 
 ### 本地预览
 
 ```bash
-FEISHU_APP_ID=... FEISHU_APP_SECRET=... \
-FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
-FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8,tblDXtddeUcpgRUq \
-FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts,news \
-npm run sync:feishu
-
+npm install
+npm run sync:writings
 npm run dev
 ```
-
-详细的 Secrets 配置见末尾的「飞书 Bitable 内容同步」章节。
 
 ## 📬 邮箱订阅功能 (Buttondown)
 
@@ -143,7 +163,7 @@ npm install
 npm run dev
 ```
 
-**构建静态文件 (用于 GitHub Pages 部署)**
+**构建静态文件 (用于 Cloudflare Pages 部署)**
 ```bash
 npm run build
 ```
@@ -151,19 +171,17 @@ npm run build
 
 ---
 
-## 🚀 部署到 GitHub Pages (参考步骤)
+## 🚀 Cloudflare Pages 部署
 
-1. 在你的 GitHub 仓库中，进入 **Settings** -> **Pages**。
-2. 将 **Source** 设置为 `GitHub Actions`。
-3. 项目根目录已包含 `.github/workflows/deploy.yml`，无需额外创建。
-4. 每次 `git push` 后，网站会自动构建并发布到 GitHub Pages。
-5. 同时，GitHub Actions 每天凌晨 3:30 会自动触发构建，无需推送也能保持 RSS 内容最新。
-
----
+1. Cloudflare Pages 项目连接 GitHub 仓库，生产分支设为 `main`。
+2. 构建命令使用 `npm run build`，输出目录使用 `dist/client`。
+3. `npm run build` 会先执行 `npm run sync:writings`，再构建站点；Markdown 校验失败时部署会失败。
+4. push 到 `main` 后，Cloudflare Pages 自动构建部署。
+5. 仓库中的 `.github/workflows/deploy.yml` 是旧 GitHub Pages 路径；如果 GitHub Pages 仍启用，push 后也会触发一次旧部署。
 
 ## 📬 飞书 Bitable 内容同步 (sync-feishu)
 
-本项目使用飞书多维表格管理 writings / works / videos / courses / abouts 五类内容。GitHub Actions 每 30 分钟 cron 同步一次（`.github/workflows/sync-feishu.yml`），本地构建时读取已 commit 的 `data/*.json`。
+本项目使用飞书多维表格管理 works / videos / courses / abouts / news 五类内容。GitHub Actions 每 30 分钟 cron 同步一次（`.github/workflows/sync-feishu.yml`）。`writings` 不再由飞书管理，脚本会显式忽略它，避免和 Markdown 来源互相覆盖。
 
 ### 本地预览真实数据
 
@@ -171,8 +189,8 @@ npm run build
 FEISHU_APP_ID=<your_app_id> \
 FEISHU_APP_SECRET=<your_app_secret> \
 FEISHU_APP_TOKEN=IjLnbCNkIaaJvjsEbAjc8XiEnYb \
-FEISHU_TABLE_IDS=tblhAtZrGqOp1WJe,tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8,tblDXtddeUcpgRUq \
-FEISHU_TABLE_KINDS=writings,works,videos,courses,abouts,news \
+FEISHU_TABLE_IDS=tblohFvGJWDtx6wV,tblCAvJrw9yvN3qY,tblrdoCjWQZSquL7,tblJHfKpqS5dAGB8,tblDXtddeUcpgRUq \
+FEISHU_TABLE_KINDS=works,videos,courses,abouts,news \
 npm run sync:feishu
 
 npm run dev
@@ -187,8 +205,8 @@ npm run dev
 | `FEISHU_APP_ID` | 飞书开放平台 → 应用 → 凭证 → App ID |
 | `FEISHU_APP_SECRET` | 同上 → App Secret |
 | `FEISHU_APP_TOKEN` | Base URL: `IjLnbCNkIaaJvjsEbAjc8XiEnYb` |
-| `FEISHU_TABLE_IDS` | 5 张表 id，逗号分隔 |
-| `FEISHU_TABLE_KINDS` | `writings,works,videos,courses,abouts` |
+| `FEISHU_TABLE_IDS` | works、videos、courses、abouts、news 五张表 id，逗号分隔 |
+| `FEISHU_TABLE_KINDS` | `works,videos,courses,abouts,news` |
 
 ### 手动触发同步
 
@@ -196,7 +214,7 @@ GitHub → Actions → sync-feishu → Run workflow。
 
 ### 内容工作流
 
-1. 在飞书 Bitable 编辑/新增记录
-2. 等待 30 分钟内自动同步（也可手动触发）
-3. PR 自动 commit 到 main，包含 `data/*.json` 和附件
+1. 在飞书 Bitable 编辑或新增 works、videos、courses、abouts、news 记录
+2. 等待 30 分钟内自动同步，或手动触发
+3. GitHub Actions 自动提交 `data/*.json` 和附件
 4. 合并后，下一次站点构建读取新数据
