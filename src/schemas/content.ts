@@ -30,6 +30,7 @@ export const WorkSchema = z.object({
   link: z.string().optional(),
   bodyMarkdown: z.string().default(""),
   bodyHtml: z.string().default(""),
+  featured: z.boolean().default(false),
   order: z.number().default(0),
 });
 
@@ -73,6 +74,17 @@ export const CourseSchema = z.object({
   order: z.number().default(0),
 });
 
+export const NewsSchema = z.object({
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  title: z.string().min(1),
+  date: z.string(),
+  updatedAt: z.string().optional(),
+  url: z.string().url(),
+  bodyMarkdown: z.string().default(""),
+  bodyHtml: z.string().default(""),
+  status: z.enum(["draft", "published"]).default("draft"),
+});
+
 export const AboutSchema = z.object({
   key: z.literal("about"),
   title: z.string().min(1),
@@ -87,4 +99,5 @@ export type Writing = z.infer<typeof WritingSchema>;
 export type Work = z.infer<typeof WorkSchema>;
 export type Video = z.infer<typeof VideoSchema>;
 export type Course = z.infer<typeof CourseSchema>;
+export type News = z.infer<typeof NewsSchema>;
 export type About = z.infer<typeof AboutSchema>;

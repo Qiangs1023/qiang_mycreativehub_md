@@ -1,27 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import newsData from "@/content/news/rss-data.json";
-
-type NewsItem = {
-  id: string;
-  title: string;
-  link: string;
-  description: string;
-  pubDate: string;
-  pubDateFormatted: string;
-  author: string;
-  categories: string[];
-};
+import { loadNews } from "@/lib/data";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
 }
 
-function getExcerpt(description: string, maxLength = 160): string {
-  const text = stripHtml(description);
+function getExcerpt(html: string, maxLength = 160): string {
+  const text = stripHtml(html);
   if (text.length <= maxLength) return text;
-  return text.slice(0, maxLength).replace(/\s+\S*$/, "") + "…";
+  return `${text.slice(0, maxLength).replace(/\s+\S*$/, "")}…`;
+}
+
+function formatDate(date: string): string {
+  const parsed = /^\d{4}-\d{2}-\d{2}$/.test(date)
+    ? new Date(`${date}T00:00:00.000Z`)
+    : new Date(Number(date));
+  if (Number.isNaN(parsed.getTime())) return date;
+  return parsed.toLocaleDateString("zh-CN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "UTC",
+  });
 }
 
 export const Route = createFileRoute("/news")({
@@ -43,20 +45,9 @@ export const Route = createFileRoute("/news")({
 });
 
 function NewsPage() {
-  const { lastFetched, items } = newsData as {
-    title: string;
-    lastFetched: string;
-    items: NewsItem[];
-  };
-
-  const fetchedDate = new Date(lastFetched);
-  const fetchedLabel = fetchedDate.toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const items = loadNews();
+  const latestDate = items[0]?.updatedAt ?? items[0]?.date ?? "";
+  const latestLabel = latestDate ? formatDate(latestDate) : "待更新";
 
   return (
     <main className="relative min-h-screen pt-20">
@@ -71,54 +62,36 @@ function NewsPage() {
             AI 深度信号
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-            精选 AI 行业资讯与工具，每周更新。数据来源自{" "}
-            <a
-              href="https://ai.hubtoday.app/blog"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary underline underline-offset-2"
-            >
-              何夕2077的博客
-            </a>
-            ，最后更新于 {fetchedLabel}。
+            精选 AI 行业资讯与工具，每周更新。由站内 Markdown 内容源更新，最后更新于 {latestLabel}。
           </p>
         </header>
 
         <div className="space-y-0">
           {items.map((item, index) => (
             <div
-              key={item.id}
+              key={item.slug}
               className="group border-b border-hairline py-8 first:pt-0 last:border-b-0"
             >
               <div className="mb-3 flex items-center gap-3 font-mono text-xs text-muted-foreground">
-                <span className="text-primary">{String(items.length - index).padStart(2, "0")}</span>
+                <span className="text-primary">
+                  {String(items.length - index).padStart(2, "0")}
+                </span>
                 <span className="h-px w-4 bg-hairline" />
-                <span>{item.pubDateFormatted}</span>
-                {item.categories.length > 0 && (
-                  <>
-                    <span className="h-px w-4 bg-hairline" />
-                    <span className="text-primary">{item.categories[0]}</span>
-                  </>
-                )}
+                <span>{formatDate(item.updatedAt ?? item.date)}</span>
               </div>
 
-              <a
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block"
-              >
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="block">
                 <h2 className="font-display text-2xl font-normal leading-tight text-foreground transition-colors group-hover:text-primary md:text-3xl">
                   {item.title}
                 </h2>
               </a>
 
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {getExcerpt(item.description)}
+                {getExcerpt(item.bodyHtml)}
               </p>
 
               <a
-                href={item.link}
+                href={item.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground transition-colors group-hover:text-primary"
