@@ -14,7 +14,8 @@
     "prebuild": "node scripts/fetch-rss.mjs",
     "sync:feishu": "node scripts/sync-feishu.mjs",
     "test:sync": "node --test scripts/sync-markdown-writings.test.mjs scripts/sync-feishu.test.mjs scripts/sync-feishu-io.test.mjs && node --import tsx --test src/lib/data.test.ts",
-    "sync:writings": "node scripts/sync-markdown-writings.mjs"
+    "sync:writings": "node scripts/sync-markdown-writings.mjs",
+    "sync:content": "node scripts/sync-markdown-content.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
