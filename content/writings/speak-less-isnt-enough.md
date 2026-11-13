@@ -1,18 +1,14 @@
 ---
-slug: speak-less-isnt-enough
-title: 少说话不够，我更在意它每次重读了什么
-excerpt: Julius Brussee 把「让 Claude 像洞穴人一样少说话」的笑话做成了 Caveman Code。我更在意的不是它说得少，而是他后来量出来的事实：真正贵的，是模型每一轮重新读进去的那些东西。
-date: '2026-11-14'
-publishedAt: '2026-11-14'
-tag: 随笔
-tags: [产品设计, 独立开发, Agent]
-readTime: 7 min
+slug: "speak-less-isnt-enough"
+title: "少说话不够，我更在意它每次重读了什么"
+excerpt: "Julius Brussee 把「让 Claude 像洞穴人一样少说话」的笑话做成了 Caveman Code。我更在意的不是它说得少，而是他后来量出来的事实：真正贵的，是模型每一轮重新读进去的那些东西。"
+date: "2026-11-14"
+publishedAt: "2026-11-14"
+tag: "随笔"
+tags: []
 status: published
 featured: false
 ---
-
-# 少说话不够，我更在意它每次重读了什么
-
 这两天刷到 Julius Brussee 的 [Caveman Code](https://caveman.so/news/introducing-caveman-code)，第一眼很容易当成一个段子产品。它最出名的出身，是一份让 Claude 像洞穴人一样说话的 Markdown：「Why use many token when few do trick。」
 
 笑话很有效。仓库冲到了约十二万星，Julius 也因此把这件事做成了全职工作。可我读完他 11 月 13 日前后的[发布说明](https://www.ycombinator.com/launches/XQG-caveman-f26-the-joke-with-120k-github-stars-is-now-the-most-efficient-coding-agent)之后，留下来的不是「少说话真省钱」，而是另一句更冷静的话：**Caveman 不只是让模型少说，更是让它少读。**

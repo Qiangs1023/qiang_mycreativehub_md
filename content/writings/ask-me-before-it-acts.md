@@ -1,18 +1,14 @@
 ---
-slug: ask-me-before-it-acts
-title: 先问我，再替我动手
-excerpt: n8n Labs 发布了能在真实网页上办事的个人 Agent Nod。我更在意的不是它能取消订阅，而是发送、付款、删除之前，它会先问我一声。
-date: '2026-11-13'
-publishedAt: '2026-11-13'
-tag: 随笔
-tags: [产品设计, 独立开发, Agent]
-readTime: 6 min
+slug: "ask-me-before-it-acts"
+title: "先问我，再替我动手"
+excerpt: "n8n Labs 发布了能在真实网页上办事的个人 Agent Nod。我更在意的不是它能取消订阅，而是发送、付款、删除之前，它会先问我一声。"
+date: "2026-11-13"
+publishedAt: "2026-11-13"
+tag: "随笔"
+tags: []
 status: published
 featured: false
 ---
-
-# 先问我，再替我动手
-
 这几天我反复打开的，不是又一个「更聪明的聊天框」，而是 n8n Labs 在 11 月 10 日以研究预览发布的 [Nod](https://blog.n8n.io/meet-nod/)。
 
 官方介绍写得很直白：它在你自己的电脑上跑，有一套本地沙箱和自己的浏览器，能在你连上的应用里做事，也能打开没有接口的网站。取消订阅、挡掉挽留优惠、去要退款；找到合适的酒店，等你说「可以」再下单；每个月登录供应商后台，把发票下载下来交给会计。这些活，聊天工具通常只会还给你一张待办清单。Nod 的意思是：清单上的事，它可以自己去点。
