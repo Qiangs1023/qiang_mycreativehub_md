@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+
+# AI 引用型爬虫放行（默认 User-agent:* 已放行，这里显式声明避免后续误改）
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://digiwild.cc/sitemap.xml

@@ -3,7 +3,22 @@ import { SectionHeader } from "./SectionHeader";
 import { loadVideos } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
-export function Videos({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
+type Props = {
+  showAction?: boolean;
+  limit?: number;
+  /** 列表页传 1（该区块就是页面主标题），首页传 2（默认） */
+  headingLevel?: 1 | 2;
+  title?: React.ReactNode;
+  description?: string;
+};
+
+export function Videos({
+  showAction = true,
+  limit,
+  headingLevel = 2,
+  title,
+  description,
+}: Props = {}) {
   const items = limit ? loadVideos().slice(0, limit) : loadVideos();
 
   return (
@@ -12,8 +27,15 @@ export function Videos({ showAction = true, limit }: { showAction?: boolean; lim
         <SectionHeader
           index="03"
           eyebrow="On Camera"
-          title={<>我在镜头前<em className="italic text-primary">说</em>。</>}
-          description="深度长视频、工作日常 vlog、产品复盘。每月 2 支。"
+          headingLevel={headingLevel}
+          title={
+            title ?? (
+              <>
+                我在镜头前<em className="italic text-primary">说</em>。
+              </>
+            )
+          }
+          description={description ?? "深度长视频、工作日常 vlog、产品复盘。每月 2 支。"}
           action={
             showAction ? (
               <Link to="/videos" className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary">

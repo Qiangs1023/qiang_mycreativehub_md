@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>数字旷野 · 独立开发者的 AI 实操档案</title>
+    <link>https://digiwild.cc/</link>
+    <atom:link href="https://digiwild.cc/rss.xml" rel="self" type="application/rss+xml" />
+    <description>独立开发、AI 工作流与真实复盘，每两周一篇。</description>
+    <language>zh-CN</language>
+    <lastBuildDate>Fri, 13 Nov 2026 00:00:00 GMT</lastBuildDate>
+    <item>
+      <title><![CDATA[先问我，再替我动手]]></title>
+      <link>https://digiwild.cc/writing/ask-me-before-it-acts</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/ask-me-before-it-acts</guid>
+      <description><![CDATA[n8n Labs 发布了能在真实网页上办事的个人 Agent Nod。我更在意的不是它能取消订阅，而是发送、付款、删除之前，它会先问我一声。]]></description>
+      <pubDate>Fri, 13 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[设门槛之前，我先问它挡住了谁]]></title>
+      <link>https://digiwild.cc/writing/who-does-the-gate-keep-out</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/who-does-the-gate-keep-out</guid>
+      <description><![CDATA[Marc Lou 把 10 万美元黑客松的 99 美元报名费改成免费，提醒我：防作弊的门槛，最先拦下的往往是最想来的人。]]></description>
+      <pubDate>Thu, 12 Nov 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[Claude Skills 精选：247个测试后的23个推荐]]></title>
+      <link>https://digiwild.cc/writing/claude-skills-23-picks</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/claude-skills-23-picks</guid>
+      <description><![CDATA[花了 6 周测试了 247 个 Claude 技能，保留了 23 个，其余全部卸载。以下是我从 247 个技能中精选的 23 个，以及它们的真正价值。]]></description>
+      <pubDate>Thu, 07 May 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[AI时代我对孩子教育的思考]]></title>
+      <link>https://digiwild.cc/writing/ai-era-education</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/ai-era-education</guid>
+      <description><![CDATA[当AI正在重塑职场，我该如何为孩子的未来做准备？]]></description>
+      <pubDate>Fri, 01 May 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[在这个人人都能开发工具的时代，我为什么还是建了一个个人网站]]></title>
+      <link>https://digiwild.cc/writing/why-i-built-personal-site</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/why-i-built-personal-site</guid>
+      <description><![CDATA[这个时代给了每个人建造的能力。但建造本身，不是目的。真正重要的，是你选择建造什么，以及你是否愿意持续做下去。]]></description>
+      <pubDate>Thu, 30 Apr 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[个人网站是未来的数字名片]]></title>
+      <link>https://digiwild.cc/writing/personal-website-future</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/personal-website-future</guid>
+      <description><![CDATA[每个人都值得拥有一个自己做主的数字名片，建立个人网站比你想象的更简单。]]></description>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[为什么我把 SaaS 卖了，又重新开始]]></title>
+      <link>https://digiwild.cc/writing/sold-my-saas</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/sold-my-saas</guid>
+      <description><![CDATA[三年时间做出一款产品，又在巅峰期卖掉。这不是一个胜利的故事，而是关于「够了」这件事。]]></description>
+      <pubDate>Mon, 14 Apr 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[独立开发者如何用一个周末验证一个想法]]></title>
+      <link>https://digiwild.cc/writing/weekend-validation</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/weekend-validation</guid>
+      <description><![CDATA[我用过的最有效的 48 小时验证流程，包含落地页、付费意愿测试、和 5 个我犯过的错误。]]></description>
+      <pubDate>Wed, 19 Mar 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[TypeScript 里我每天都在用的 7 个模式]]></title>
+      <link>https://digiwild.cc/writing/typescript-patterns</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/typescript-patterns</guid>
+      <description><![CDATA[不是教程，是一份我自己反复抄的速查清单。包含真实项目里的代码片段。]]></description>
+      <pubDate>Sun, 09 Feb 2025 00:00:00 GMT</pubDate>
+    </item>
+    <item>
+      <title><![CDATA[一个人公司的财务真相]]></title>
+      <link>https://digiwild.cc/writing/solo-finance</link>
+      <guid isPermaLink="true">https://digiwild.cc/writing/solo-finance</guid>
+      <description><![CDATA[去年的全部收入构成、税务、和我交的「学费」。透明到让自己有点难为情的程度。]]></description>
+      <pubDate>Tue, 07 Jan 2025 00:00:00 GMT</pubDate>
+    </item>
+  </channel>
+</rss>

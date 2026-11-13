@@ -7,25 +7,25 @@ import { Work } from "@/components/Work";
 import { Writing } from "@/components/Writing";
 import { Videos } from "@/components/Videos";
 import { Courses } from "@/components/Courses";
-import { AIChatSection } from "@/components/AIChatSection";
+import { IntentPaths } from "@/components/IntentPaths";
+import { pageSeo, personAndSiteLd } from "@/lib/seo";
+import { loadWritings, loadWorks, loadVideos, loadCourses } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "数字旷野 — 独立开发者 · 写作者 · 教育者" },
-      {
-        name: "description",
-        content:
-          "数字旷野的个人主页 — 独立开发者、自媒体博主、课程作者。在这里查看他的产品、文章、视频与课程。",
-      },
-      { property: "og:title", content: "数字旷野 — 独立开发者 · 写作者 · 教育者" },
-      {
-        property: "og:description",
-        content:
-          "造物，写作，然后分享。三年时间从一个人到 6 位数年收入的实践记录。",
-      },
-    ],
-  }),
+  head: () => {
+    const writings = loadWritings().length;
+    const works = loadWorks().length;
+    const videos = loadVideos().length;
+    const courses = loadCourses().length;
+
+    return pageSeo({
+      path: "/",
+      title: "数字旷野 — AI 实操档案",
+      description: `用 AI 把想法变成能销售的东西。这里有 ${works} 个上线产品、${writings} 篇文章、${videos} 支视频和 ${courses} 门课，全部是我自己做过的东西。`,
+      jsonLd: personAndSiteLd(),
+      keywords: ["AI coding", "自动工作流", "Obsidian", "跨境出海" , "个人网站"],
+    });
+  },
   component: Index,
 });
 
@@ -35,6 +35,8 @@ function Index() {
       <Nav />
       <Hero />
       <Marquee />
+
+      <IntentPaths />
 
       <Writing limit={4} />
       <Work limit={6} />

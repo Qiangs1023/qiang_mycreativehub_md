@@ -3,7 +3,22 @@ import { SectionHeader } from "./SectionHeader";
 import { loadWorks } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
 
-export function Work({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
+type Props = {
+  showAction?: boolean;
+  limit?: number;
+  /** 列表页传 1（该区块就是页面主标题），首页传 2（默认） */
+  headingLevel?: 1 | 2;
+  title?: React.ReactNode;
+  description?: string;
+};
+
+export function Work({
+  showAction = true,
+  limit,
+  headingLevel = 2,
+  title,
+  description,
+}: Props = {}) {
   const items = limit ? loadWorks().slice(0, limit) : loadWorks();
 
   return (
@@ -12,8 +27,17 @@ export function Work({ showAction = true, limit }: { showAction?: boolean; limit
         <SectionHeader
           index="01"
           eyebrow="Selected Work"
-          title={<>我做过的<em className="italic text-primary">东西</em>。</>}
-          description="从一行代码到上线产品。每一个都是我亲手设计、开发、运营的。"
+          headingLevel={headingLevel}
+          title={
+            title ?? (
+              <>
+                正在做的<em className="italic text-primary">东西</em>。
+              </>
+            )
+          }
+          description={
+            description ?? "从想法到上线产品。都是一个不断试错，调整，失败，再调整的过程。"
+          }
           action={
             showAction ? (
               <Link to="/work" className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary">

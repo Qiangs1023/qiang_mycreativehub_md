@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X, MessageCircle } from "lucide-react";
+import { isDifyConfigured } from "@/lib/dify";
 
 const links = [
-  { to: "/work", label: "Work" },
-  { to: "/writing", label: "Writing" },
-  { to: "/videos", label: "Videos" },
-  { to: "/courses", label: "Courses" },
-  { to: "/news", label: "News" },
-  { to: "/about", label: "About" },
+  { to: "/start-here", label: "从零开始" },
+  { to: "/writing", label: "写作" },
+  { to: "/work", label: "作品" },
+  { to: "/videos", label: "视频" },
+  { to: "/courses", label: "课程" },
+  { to: "/about", label: "关于" },
 ] as const;
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Dify 没配就别在导航里摆一个点进去只会看到报错的入口（方案 P0-4）
+  const chatEnabled = isDifyConfigured();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -63,18 +66,20 @@ export function Nav() {
           </nav>
 
           <div className="hidden items-center gap-2 md:flex">
-            <Link
-              to="/chat"
-              className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <MessageCircle className="h-4 w-4" />
-              AI助手
-            </Link>
+            {chatEnabled && (
+              <Link
+                to="/chat"
+                className="flex items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
+                <MessageCircle className="h-4 w-4" />
+                AI助手
+              </Link>
+            )}
             <Link
               to="/courses"
               className="rounded-full bg-primary px-4 py-1.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              订阅 →
+              课程 →
             </Link>
           </div>
 
@@ -104,20 +109,22 @@ export function Nav() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              to="/chat"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 font-display text-3xl text-foreground transition-colors hover:text-primary"
-            >
-              <MessageCircle className="h-8 w-8" />
-              AI 助手
-            </Link>
+            {chatEnabled && (
+              <Link
+                to="/chat"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 font-display text-3xl text-foreground transition-colors hover:text-primary"
+              >
+                <MessageCircle className="h-8 w-8" />
+                AI 助手
+              </Link>
+            )}
             <Link
               to="/courses"
               onClick={() => setMobileMenuOpen(false)}
               className="mt-4 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
             >
-              订阅 →
+              课程 →
             </Link>
           </nav>
         </div>

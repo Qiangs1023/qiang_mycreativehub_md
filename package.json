@@ -5,13 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "npm run sync:content && vite build",
+    "build": "npm run sync:content && node scripts/generate-seo-files.mjs && vite build",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test:sync": "node --test scripts/sync-markdown-content.test.mjs && node --import tsx --test src/lib/data.test.ts",
-    "sync:content": "node scripts/sync-markdown-content.mjs"
+    "test:sync": "node --test scripts/sync-markdown-content.test.mjs && node --import tsx --test src/lib/data.test.ts src/lib/seo.test.ts",
+    "sync:content": "node scripts/sync-markdown-content.mjs",
+    "seo:files": "node scripts/generate-seo-files.mjs",
+    "og": "node scripts/build-og.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

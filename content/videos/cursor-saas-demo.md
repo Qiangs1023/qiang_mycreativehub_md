@@ -8,8 +8,6 @@ status: published
 cover: uploads/videos/cursor-saas-demo/video-1.jpg
 platform: B站
 duration: '18:30'
-views: 12 万播放
-videoUrl: https://www.bilibili.com/video/example2
 featured: false
 order: 0
 ---

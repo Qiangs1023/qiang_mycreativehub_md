@@ -7,17 +7,35 @@ function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
+        <div className="font-mono text-xs uppercase tracking-[0.2em] text-primary">404</div>
+        <h1 className="mt-4 font-display text-4xl font-light text-foreground">这个页面不存在</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          链接可能已经失效，或者地址拼错了。下面几个入口应该能帮你找到要找的东西。
         </p>
-        <div className="mt-6">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Go home
+            回到首页
+          </Link>
+          <Link
+            to="/start-here"
+            className="inline-flex items-center justify-center rounded-full border border-hairline px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+          >
+            从零开始
+          </Link>
+          <Link
+            to="/writing"
+            className="inline-flex items-center justify-center rounded-full border border-hairline px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+          >
+            文章
+          </Link>
+          <Link
+            to="/courses"
+            className="inline-flex items-center justify-center rounded-full border border-hairline px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface"
+          >
+            课程
           </Link>
         </div>
       </div>
@@ -27,22 +45,27 @@ function NotFoundComponent() {
 
 export const Route = createRootRoute({
   head: () => ({
+    // 这里只放全站级、且**每个页面都会覆盖**的 key。
+    // og:* / twitter:* 一律由各路由的 pageSeo() 完整输出 —— 父级的独有 key
+    // 会原样漏到子页（meta 只在同名 key 时才被覆盖）。
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { title: "数字旷野 — 独立开发者的 AI 实操档案" },
+      {
+        name: "description",
+        content: "记录一个人如何用 AI 把想法做成产品：独立开发、知识管理、写作与真实复盘。",
+      },
+      { name: "author", content: "数字旷野" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       {
-        rel: "stylesheet",
-        href: appCss,
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "数字旷野 · RSS",
+        href: "/rss.xml",
       },
     ],
   }),
@@ -53,7 +76,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="zh-CN">
       <head>
         <HeadContent />
       </head>

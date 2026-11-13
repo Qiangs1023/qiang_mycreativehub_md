@@ -91,7 +91,6 @@ const ENTRY_FIELDS = {
     "cover",
     "platform",
     "duration",
-    "views",
     "videoUrl",
     "bodyMarkdown",
     "bodyHtml",
@@ -109,7 +108,6 @@ const ENTRY_FIELDS = {
     "cover",
     "price",
     "original",
-    "students",
     "features",
     "primary",
     "badge",
@@ -164,11 +162,23 @@ export function convertObsidianImages(markdown) {
   });
 }
 
+/**
+ * 正文标题降级：页面模板已经把文章标题渲染成该页唯一的 h1，
+ * 正文再出现 h1 会让一页有多个 h1（实测 claude-skills-23-picks 有 9 个），
+ * 语义结构直接乱掉。这里在唯一的 markdown→html 出口统一降一级。
+ */
+export function demoteHeadings(html) {
+  return String(html)
+    .replace(/<h1(\s[^>]*)?>/gi, "<h2$1>")
+    .replace(/<\/h1>/gi, "</h2>");
+}
+
 export function renderMarkdown(markdown) {
-  return marked.parse(convertObsidianImages(markdown), {
+  const html = marked.parse(convertObsidianImages(markdown), {
     gfm: true,
     breaks: false,
   });
+  return demoteHeadings(html);
 }
 
 export function normalizeEntry(kind, data, markdown, sourceFile) {
@@ -237,6 +247,37 @@ function resolveLocalAsset(source, publicDirectory, label) {
   const stat = fs.existsSync(candidate) ? fs.statSync(candidate) : undefined;
   if (!stat?.isFile()) return `${label} does not exist: ${source}`;
   return null;
+}
+
+// 只查「文件存在」不够：曾经 /uploads 下的「图片」其实是飞书下载代理返回的
+// 364 字节 JSON，浏览器会当图片解码失败 → 全站裂图。这里按魔数确认真是图片。
+const IMAGE_MAGIC = [
+  { name: "jpeg", bytes: [0xff, 0xd8, 0xff] },
+  { name: "png", bytes: [0x89, 0x50, 0x4e, 0x47] },
+  { name: "gif", bytes: [0x47, 0x49, 0x46, 0x38] },
+];
+
+function isRealImage(filePath) {
+  let head;
+  try {
+    const fd = fs.openSync(filePath, "r");
+    head = Buffer.alloc(16);
+    fs.readSync(fd, head, 0, 16, 0);
+    fs.closeSync(fd);
+  } catch {
+    return false;
+  }
+
+  if (IMAGE_MAGIC.some((m) => m.bytes.every((b, i) => head[i] === b))) return true;
+
+  // RIFF....WEBP
+  if (head.subarray(0, 4).toString("ascii") === "RIFF" &&
+      head.subarray(8, 12).toString("ascii") === "WEBP") return true;
+
+  // ....ftypheic / ftypavif
+  if (head.subarray(4, 8).toString("ascii") === "ftyp") return true;
+
+  return false;
 }
 
 function imageSources(html) {
@@ -338,6 +379,13 @@ export function validateEntries(kind, entries, publicDirectory) {
       } else {
         const coverError = resolveLocalAsset(entry.cover, publicDirectory, "cover");
         if (coverError) addError(entry, coverError);
+        else {
+          const decoded = decodeURIComponent(entry.cover.split(/[?#]/, 1)[0]);
+          const abs = path.resolve(path.resolve(publicDirectory), decoded.replace(/^\/+/, ""));
+          if (!isRealImage(abs)) {
+            addError(entry, `cover is not a valid image file: ${entry.cover}`);
+          }
+        }
       }
     }
 

@@ -1,0 +1,28 @@
+# 数字旷野 — 独立开发者的 AI 实操档案
+
+> 一个人的 AI 工作流实操记录：产品、文章、视频与课程。面向想用 AI 把想法变成产品的开发者。
+
+## 栏目
+
+- [从零开始](https://digiwild.cc/start-here)：新访客的路线图 —— 我是谁、你能拿到什么、从哪开始
+- [写作](https://digiwild.cc/writing)：独立开发与 AI 工作流的真实复盘，每两周一篇
+- [作品](https://digiwild.cc/work)：已上线的产品与项目，含技术栈与现状
+- [视频](https://digiwild.cc/videos)：深度长视频与工作日常 vlog
+- [课程](https://digiwild.cc/courses)：Obsidian+Agent、独立开发实战、跨境贸易社群
+- [关于](https://digiwild.cc/about)：我是谁，以及联系方式
+
+## 精选文章
+
+- [先问我，再替我动手](https://digiwild.cc/writing/ask-me-before-it-acts)：n8n Labs 发布了能在真实网页上办事的个人 Agent Nod。我更在意的不是它能取消订阅，而是发送、付款、删除之前，它会先问我一声。
+- [设门槛之前，我先问它挡住了谁](https://digiwild.cc/writing/who-does-the-gate-keep-out)：Marc Lou 把 10 万美元黑客松的 99 美元报名费改成免费，提醒我：防作弊的门槛，最先拦下的往往是最想来的人。
+- [Claude Skills 精选：247个测试后的23个推荐](https://digiwild.cc/writing/claude-skills-23-picks)：花了 6 周测试了 247 个 Claude 技能，保留了 23 个，其余全部卸载。以下是我从 247 个技能中精选的 23 个，以及它们的真正价值。
+- [AI时代我对孩子教育的思考](https://digiwild.cc/writing/ai-era-education)：当AI正在重塑职场，我该如何为孩子的未来做准备？
+- [在这个人人都能开发工具的时代，我为什么还是建了一个个人网站](https://digiwild.cc/writing/why-i-built-personal-site)：这个时代给了每个人建造的能力。但建造本身，不是目的。真正重要的，是你选择建造什么，以及你是否愿意持续做下去。
+
+## 事实
+
+- 位置：中国上海
+- 语言：中文
+- 站内内容：10 篇文章、3 个上线产品、3 支视频、3 门在售课程
+- 联系：https://digiwild.cc/about 页底部邮箱
+- 订阅：https://digiwild.cc/rss.xml

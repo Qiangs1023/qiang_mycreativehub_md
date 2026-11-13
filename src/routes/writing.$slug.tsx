@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
 import { loadWritings, findWriting, neighbours } from "@/lib/data";
+import { pageSeo, articleLd, ldOne, ensureDescription } from "@/lib/seo";
 
 function formatDate(date?: string) {
   if (!date) return "";
@@ -26,15 +27,21 @@ export const Route = createFileRoute("/writing/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const entry = loaderData;
-    return {
-      meta: [
-        { title: `${entry.title} — 数字旷野` },
-        { name: "description", content: entry.excerpt ?? "" },
-        { property: "og:title", content: `${entry.title} — 数字旷野` },
-        { property: "og:description", content: entry.excerpt ?? "" },
-        { property: "article:published_time", content: entry.date ?? "" },
-      ],
-    };
+    const path = `/writing/${entry.slug}`;
+    return pageSeo({
+      path,
+      title: `${entry.title} — 数字旷野`,
+      description: ensureDescription(
+        entry.excerpt,
+        `${entry.title} —— 独立开发与 AI 工作流的真实复盘，由数字旷野撰写。`,
+      ),
+      type: "article",
+      publishedTime: entry.publishedAt ?? entry.date,
+      modifiedTime: entry.publishedAt ?? entry.date,
+      image: entry.cover,
+      jsonLd: ldOne(articleLd(entry, path, entry.cover)),
+      keywords: [entry.tag, "独立开发", "AI 工作流"].filter(Boolean),
+    });
   },
   notFoundComponent: () => (
     <section className="mx-auto max-w-3xl px-6 py-24 text-center">

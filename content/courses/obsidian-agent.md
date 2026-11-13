@@ -8,7 +8,6 @@ tag: 旗舰课程
 status: published
 price: ¥199
 original: ¥599
-students: 1,240+ 学员
 features:
   - 私密社群终身访问
   - 持续更新课程
@@ -16,7 +15,6 @@ features:
 primary: true
 badge: 最受欢迎
 cta: 立即报名
-url: https://qiang-mycreativehub-md.pages.dev/
 featured: false
 order: 0
 ---

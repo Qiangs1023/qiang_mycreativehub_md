@@ -3,6 +3,7 @@ import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { Prose } from "@/components/Prose";
 import { loadAbout } from "@/lib/data";
+import { pageSeo, webPageLd, ldGraph, ensureDescription } from "@/lib/seo";
 
 const stack = [
   "TypeScript",
@@ -28,20 +29,26 @@ export const Route = createFileRoute("/about")({
   },
   head: ({ loaderData }) => {
     const data = loaderData;
-    return {
-      meta: [
-        { title: data?.title ? `${data.title}` : "About — 关于数字旷野" },
+    const description = ensureDescription(
+      data?.excerpt,
+      "数字旷野：AI coding 重度用户，独立开发者、内容创作者与课程作者。这里记录我做过的产品、写过的文章和开的课。",
+    );
+    return pageSeo({
+      path: "/about",
+      title: "关于数字旷野 — 独立开发者、写作者与课程作者",
+      description,
+      jsonLd: ldGraph([
+        webPageLd({ name: "关于数字旷野", description, path: "/about" }),
         {
-          name: "description",
-          content: data?.excerpt ?? "我是数字旷野 — 2019 年从大厂离职，一个人做产品、写文章、录视频。",
+          "@type": "ProfilePage",
+          "@id": "https://digiwild.cc/about#profile",
+          "url": "https://digiwild.cc/about",
+          "about": { "@id": "https://digiwild.cc/#person" },
+          "inLanguage": "zh-CN",
         },
-        { property: "og:title", content: "About — 关于数字旷野" },
-        {
-          property: "og:description",
-          content: "一个人，一台电脑，一段还在继续的旅程。",
-        },
-      ],
-    };
+      ]),
+      keywords: ["数字旷野", "独立开发者", "内容创作者", "关于我"],
+    });
   },
   component: AboutPage,
 });

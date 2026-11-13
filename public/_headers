@@ -1,0 +1,71 @@
+# Cloudflare Pages 响应头配置
+#
+# 规则要点（官方行为，别踩）：
+# - 一个请求匹配多条规则时，**所有**匹配的 header 都会生效。
+# - 同一个 header 在文件里出现两次 → 值会被逗号拼接（`a, b`），会坏掉。
+#   所以 Cache-Control 绝不能同时写在 `/*` 和 `/assets/*` 里 —— 这里用「枚举 HTML 路由」的办法绕开。
+# - `! Header-Name` 表示移除某个默认 header。
+
+# ---------- 全站：安全响应头 ----------
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://api.dify.ai https://*.dify.ai http://43.167.234.114; frame-src 'self' https://www.youtube.com https://player.bilibili.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+
+# ---------- HTML 页面：CDN 缓存 10 分钟，可提供 24 小时内的过期内容 ----------
+# 浏览器每次都回源校验（max-age=0），但 CDN 吸收绝大多数请求（s-maxage=600），
+# 回源期间还能继续吐旧内容（stale-while-revalidate=86400）。
+/
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/about
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/start-here
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/writing
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/writing/*
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/work
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/work/*
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/videos
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/videos/*
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/courses
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/courses/*
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/news
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+/chat
+  Cache-Control: public, max-age=0, s-maxage=600, stale-while-revalidate=86400
+
+# ---------- 带内容哈希的静态资源：永久缓存 ----------
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/uploads/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/og/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=31536000, immutable

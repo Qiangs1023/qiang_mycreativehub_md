@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
 import { loadWorks, findWork, neighbours } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
+import { pageSeo, workLd, ldOne } from "@/lib/seo";
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
@@ -12,14 +13,18 @@ export const Route = createFileRoute("/work/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const entry = loaderData;
-    return {
-      meta: [
-        { title: `${entry.title} — Work · 数字旷野` },
-        { name: "description", content: entry.excerpt ?? "" },
-        { property: "og:title", content: `${entry.title} — Work · 数字旷野` },
-        { property: "og:description", content: entry.excerpt ?? "" },
-      ],
-    };
+    const path = `/work/${entry.slug}`;
+    const stack = entry.stack?.slice(0, 6).join("、");
+    return pageSeo({
+      path,
+      title: `${entry.title} — 独立开发作品 · 数字旷野`,
+      description:
+        entry.excerpt ??
+        `${entry.title}：数字旷野独立开发的上线产品${stack ? `，使用 ${stack}` : ""}。`,
+      image: entry.cover,
+      jsonLd: ldOne(workLd(entry, path, entry.cover)),
+      keywords: ["独立开发作品", "SaaS", ...(entry.stack ?? []).slice(0, 5)],
+    });
   },
   notFoundComponent: () => (
     <section className="mx-auto max-w-3xl px-6 py-24 text-center">

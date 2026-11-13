@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
 import { loadVideos, findVideo, neighbours } from "@/lib/data";
 import { resolveCover } from "@/lib/covers";
+import { pageSeo, videoLd, ldOne, isPlaceholderUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/videos/$slug")({
   loader: ({ params }) => {
@@ -12,14 +13,19 @@ export const Route = createFileRoute("/videos/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const entry = loaderData;
-    return {
-      meta: [
-        { title: `${entry.title} — Videos · 数字旷野` },
-        { name: "description", content: entry.excerpt ?? "" },
-        { property: "og:title", content: `${entry.title} — Videos · 数字旷野` },
-        { property: "og:description", content: entry.excerpt ?? "" },
-      ],
-    };
+    const path = `/videos/${entry.slug}`;
+    const duration = entry.duration ? `，时长 ${entry.duration}` : "";
+    return pageSeo({
+      path,
+      title: `${entry.title} — 视频 · 数字旷野`,
+      description:
+        entry.excerpt ?? `${entry.title}：数字旷野的独立开发复盘视频${duration}。`,
+      type: "video.other",
+      publishedTime: entry.publishedAt ?? entry.date,
+      image: entry.cover,
+      jsonLd: ldOne(videoLd(entry, path, entry.cover)),
+      keywords: ["独立开发视频", entry.platform, "build in public"].filter(Boolean),
+    });
   },
   notFoundComponent: () => (
     <section className="mx-auto max-w-3xl px-6 py-24 text-center">
@@ -69,12 +75,6 @@ function VideoDetail() {
               <span>{entry.duration}</span>
             </>
           )}
-          {entry.views && (
-            <>
-              <span className="h-px w-6 bg-hairline" />
-              <span>{entry.views}</span>
-            </>
-          )}
         </div>
 
         <h1 className="mt-6 font-display text-balance text-4xl font-light leading-[1.05] tracking-tight md:text-6xl">
@@ -88,7 +88,7 @@ function VideoDetail() {
         )}
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          {entry.videoUrl && (
+          {entry.videoUrl && !isPlaceholderUrl(entry.videoUrl) ? (
             <a
               href={entry.videoUrl}
               target="_blank"
@@ -100,6 +100,13 @@ function VideoDetail() {
               </svg>
               在 {entry.platform} 观看
             </a>
+          ) : (
+            <span className="inline-flex items-center gap-2 rounded-full border border-hairline px-5 py-3 text-sm text-muted-foreground">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              视频链接待发布
+            </span>
           )}
           <Link
             to="/videos"
@@ -110,7 +117,7 @@ function VideoDetail() {
         </div>
       </header>
 
-      {cover && entry.videoUrl && (
+      {cover && entry.videoUrl && !isPlaceholderUrl(entry.videoUrl) && (
         <a
           href={entry.videoUrl}
           target="_blank"

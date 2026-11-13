@@ -1,14 +1,23 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import portrait from "@/assets/portrait.jpg";
-import { loadWritings, loadWorks } from "@/lib/data";
+import portrait1x from "@/assets/portrait-1x.jpg";
+import portrait2x from "@/assets/portrait-2x.jpg";
+import { loadWritings, loadWorks, loadVideos, loadCourses } from "@/lib/data";
 
 export function Hero() {
   const writings = loadWritings();
   const works = loadWorks();
+  const videos = loadVideos();
+  const courses = loadCourses();
   const latestWriting = writings[0];
-  const writingCount = writings.length;
-  const workCount = works.length;
+
+  // 全部来自站内真实内容，不做夸大 —— 数字能被点开核对才有信任价值
+  const stats = [
+    { value: writings.length, label: "已发布文章" },
+    { value: works.length, label: "上线产品" },
+    { value: courses.length, label: "在售课程" },
+    { value: videos.length, label: "公开视频" },
+  ];
 
   return (
     <section id="top" className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
@@ -24,18 +33,18 @@ export function Hero() {
               <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative h-1.5 w-1.5 rounded-full bg-primary" />
             </span>
-            正在构建 — Lumen, 一个面向写作者的 AI 工作台
+            正在构建个人的网络系统
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.05 }}
-            className="font-display text-balance text-5xl font-light leading-[1.05] tracking-tight md:text-7xl"
+            className="font-display text-balance text-[2.6rem] font-light leading-[1.08] tracking-tight md:text-6xl"
           >
-            造物，写作，
+            用 <em className="italic text-primary">AI</em>
             <br />
-            然后<em className="italic text-primary">分享</em>。
+            把想法变成能销售的东西
           </motion.h1>
 
           <motion.p
@@ -44,8 +53,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground"
           >
-            我是数字旷野 — 独立开发者、内容创作者。
-            过去三年，我把一个人的工作室做成了 6 位数年收入。这里记录我所做、所写、所教的一切。
+            独立开发者 · 内容创作者。这里是我做过的产品、写过的文章、录过的视频和开的课。
           </motion.p>
 
           <motion.div
@@ -55,10 +63,10 @@ export function Hero() {
             className="mt-10 flex flex-wrap items-center gap-3"
           >
             <Link
-              to="/courses"
+              to="/start-here"
               className="group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              查看课程
+              从零开始
               <span className="transition-transform group-hover:translate-x-1">→</span>
             </Link>
             {latestWriting ? (
@@ -83,20 +91,14 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="mt-14 grid max-w-md grid-cols-3 gap-6 font-mono text-xs"
+            className="mt-14 grid max-w-lg grid-cols-2 gap-6 font-mono text-xs md:grid-cols-4"
           >
-            <div>
-              <div className="font-display text-3xl text-foreground">12k</div>
-              <div className="mt-1 text-muted-foreground">订阅读者</div>
-            </div>
-            <div>
-              <div className="font-display text-3xl text-foreground">{writingCount}</div>
-              <div className="mt-1 text-muted-foreground">已发布文章</div>
-            </div>
-            <div>
-              <div className="font-display text-3xl text-primary">{workCount}</div>
-              <div className="mt-1 text-muted-foreground">作品数</div>
-            </div>
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="font-display text-3xl text-foreground">{s.value}</div>
+                <div className="mt-1 text-muted-foreground">{s.label}</div>
+              </div>
+            ))}
           </motion.div>
         </div>
 
@@ -108,10 +110,14 @@ export function Hero() {
         >
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border border-hairline shadow-card">
             <img
-              src={portrait}
+              src={portrait2x}
+              srcSet={`${portrait1x} 480w, ${portrait2x} 960w`}
+              sizes="(min-width: 768px) 460px, 90vw"
               alt="数字旷野的肖像照片"
-              width={896}
-              height={1152}
+              width={480}
+              height={600}
+              fetchPriority="high"
+              decoding="async"
               className="h-full w-full object-cover grayscale-[15%]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />

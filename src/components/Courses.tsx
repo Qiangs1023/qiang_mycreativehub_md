@@ -2,7 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { SectionHeader } from "./SectionHeader";
 import { loadCourses } from "@/lib/data";
 
-export function Courses({ limit }: { limit?: number } = {}) {
+type Props = {
+  limit?: number;
+  /** 列表页传 1（该区块就是页面主标题），首页传 2（默认） */
+  headingLevel?: 1 | 2;
+  title?: React.ReactNode;
+  description?: string;
+};
+
+export function Courses({ limit, headingLevel = 2, title, description }: Props = {}) {
   const items = limit ? loadCourses().slice(0, limit) : loadCourses();
 
   return (
@@ -11,8 +19,15 @@ export function Courses({ limit }: { limit?: number } = {}) {
         <SectionHeader
           index="04"
           eyebrow="Courses"
-          title={<>我把走过的路，<em className="italic text-primary">教给你</em>。</>}
-          description="不是教程合集，是我自己每天都在用的方法论。"
+          headingLevel={headingLevel}
+          title={
+            title ?? (
+              <>
+                把走过的路，<em className="italic text-primary">分享给你</em>。
+              </>
+            )
+          }
+          description={description ?? "不是教程合集，是我自己每天探索的经验汇总。"}
         />
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -32,7 +47,7 @@ export function Courses({ limit }: { limit?: number } = {}) {
 
                 <div className="mt-6 flex items-baseline gap-3">
                   <span className="font-display text-4xl text-foreground">
-                    {c.price || "Free"}
+                    {c.price || "咨询"}
                   </span>
                 </div>
 

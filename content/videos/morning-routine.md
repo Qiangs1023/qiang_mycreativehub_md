@@ -8,8 +8,6 @@ status: published
 cover: uploads/videos/morning-routine/video-2.jpg
 platform: YouTube
 duration: '11:42'
-views: 8.4 万播放
-videoUrl: https://www.youtube.com/watch?v=example
 featured: false
 order: 0
 ---

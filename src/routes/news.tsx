@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { loadNews } from "@/lib/news";
+import { pageSeo, collectionLd } from "@/lib/seo";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
@@ -27,20 +28,22 @@ function formatDate(date: string): string {
 }
 
 export const Route = createFileRoute("/news")({
-  head: () => ({
-    meta: [
-      { title: "News — 数字旷野的 AI 资讯" },
-      {
-        name: "description",
-        content: "精选 AI 行业资讯与工具，每周更新，助你紧跟 AI 前沿动态。",
-      },
-      { property: "og:title", content: "News — 数字旷野的 AI 资讯" },
-      {
-        property: "og:description",
-        content: "精选 AI 行业资讯与工具，每周更新，助你紧跟 AI 前沿动态。",
-      },
-    ],
-  }),
+  head: () => {
+    const items = loadNews();
+    const description = `精选 AI 行业资讯与工具，共 ${items.length} 条，站内 Markdown 持续更新。含大模型动态、AI 工具与独立开发相关的实用信息。`;
+    return pageSeo({
+      path: "/news",
+      title: "资讯 — AI 行业信号与工具精选",
+      description,
+      jsonLd: collectionLd({
+        name: "资讯 — AI 行业信号与工具精选",
+        description,
+        path: "/news",
+        items: items.map((n) => ({ name: n.title, url: n.url })),
+      }),
+      keywords: ["AI 资讯", "AI 工具", "大模型动态", "AI newsletter"],
+    });
+  },
   component: NewsPage,
 });
 

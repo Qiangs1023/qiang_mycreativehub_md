@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <!-- 站点默认 OG 图（1200×630）。
+       画布做成 1200×1200，1200×630 的画面垂直居中（y=285..915），
+       因为 macOS qlmanage 只能输出正方形缩略图，最后再居中裁回 1200×630。
+       改这张图请改 og-src/ 下的源文件，然后跑 node scripts/build-og.mjs -->
+  <rect width="1200" height="1200" fill="#141412"/>
+
+  <g transform="translate(0, 285)">
+    <rect width="1200" height="630" fill="#141412"/>
+
+    <!-- 顶部标识 -->
+    <circle cx="100" cy="96" r="10" fill="#4ade80"/>
+    <text x="126" y="104" font-family="Menlo, monospace" font-size="27" fill="#f2efe7" letter-spacing="1">数字旷野</text>
+    <text x="258" y="104" font-family="Menlo, monospace" font-size="23" fill="#8f8a7e" letter-spacing="1">/ indie</text>
+
+    <!-- 主标题 -->
+    <text x="100" y="268" font-family="Songti SC, Noto Serif CJK SC, serif" font-size="68" fill="#f2efe7" letter-spacing="1">一个人，怎么用 <tspan font-family="Helvetica Neue, Arial, sans-serif" font-size="62">AI</tspan></text>
+    <text x="100" y="360" font-family="Songti SC, Noto Serif CJK SC, serif" font-size="68" fill="#f2efe7" letter-spacing="1">把想法变成能卖的东西。</text>
+
+    <!-- 绿色强调条 -->
+    <rect x="100" y="410" width="132" height="6" fill="#4ade80"/>
+
+    <!-- 底部说明 -->
+    <text x="100" y="516" font-family="Menlo, monospace" font-size="24" fill="#9a958a" letter-spacing="1">独立开发 · AI 工作流 · Obsidian · 写作变现</text>
+    <text x="1100" y="516" text-anchor="end" font-family="Menlo, monospace" font-size="24" fill="#4ade80" letter-spacing="1">digiwild.cc</text>
+  </g>
+</svg>

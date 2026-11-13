@@ -8,7 +8,6 @@ tag: 旗舰课程
 status: published
 price: ¥1,288
 original: ¥1,888
-students: 1,240+ 学员
 features:
   - 12 周直播课程
   - 一对一项目评审

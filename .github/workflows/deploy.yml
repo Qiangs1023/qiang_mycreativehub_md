@@ -29,15 +29,13 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Fetch RSS
-        run: node scripts/fetch-rss.mjs
-        continue-on-error: true
-
       - name: Build
         run: npm run build
 
-      - name: Prepare SPA fallback
-        run: cp dist/client/index.html dist/client/404.html
+      # 注意：不要再用 `cp dist/client/index.html dist/client/404.html` 做 SPA fallback。
+      # 那样未知路径会拿到一份首页 HTML —— 即使状态码是 404，搜索引擎仍会判定为
+      # 「重复内容 / 软 404」，白白稀释首页权重。
+      # public/404.html 已经是真正的 404 页，Vite 构建时会原样复制到 dist/client/。
 
       - name: Upload
         uses: actions/upload-pages-artifact@v3

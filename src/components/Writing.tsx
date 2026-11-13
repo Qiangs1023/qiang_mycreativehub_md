@@ -9,7 +9,23 @@ function formatDate(date?: string | null) {
   return `${y} · ${m}`;
 }
 
-export function Writing({ showAction = true, limit }: { showAction?: boolean; limit?: number } = {}) {
+type Props = {
+  showAction?: boolean;
+  limit?: number;
+  /** 列表页传 1（该区块就是页面主标题），首页传 2（默认） */
+  headingLevel?: 1 | 2;
+  /** 列表页覆盖标题文案 */
+  title?: React.ReactNode;
+  description?: string;
+};
+
+export function Writing({
+  showAction = true,
+  limit,
+  headingLevel = 2,
+  title,
+  description,
+}: Props = {}) {
   const items = limit ? loadWritings().slice(0, limit) : loadWritings();
 
   return (
@@ -18,8 +34,18 @@ export function Writing({ showAction = true, limit }: { showAction?: boolean; li
         <SectionHeader
           index="02"
           eyebrow="Writing"
-          title={<>我<em className="italic text-primary">想清楚</em>的事。</>}
-          description="每两周一篇，关于独立工作、产品设计、和如何在不焦虑的前提下生活。"
+          headingLevel={headingLevel}
+          title={
+            title ?? (
+              <>
+                我<em className="italic text-primary">想清楚</em>的事。
+              </>
+            )
+          }
+          description={
+            description ??
+            "每两周一篇，关于独立工作、产品设计、和如何在不焦虑的前提下生活。"
+          }
           action={
             showAction ? (
               <Link to="/writing" className="inline-flex items-center gap-2 font-mono text-xs text-muted-foreground transition-colors hover:text-primary">

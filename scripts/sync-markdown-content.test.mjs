@@ -17,7 +17,11 @@ function makeRoot() {
   }
   fs.mkdirSync(path.join(publicDir, "uploads", "my-work"), { recursive: true });
   fs.mkdirSync(data, { recursive: true });
-  fs.writeFileSync(path.join(publicDir, "uploads/my-work/cover.png"), "image");
+  // 必须是真的 PNG：同步脚本会按魔数校验 cover 是不是图片
+  fs.writeFileSync(
+    path.join(publicDir, "uploads/my-work/cover.png"),
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+  );
   return { root, content, publicDir, data };
 }
 
@@ -149,6 +153,32 @@ test("validateEntries reports required fields, filenames, dates, statuses, and d
       assert.match(error.message, /duplicate slug: my-post appears 2 times/);
       return true;
     },
+  );
+});
+
+test("validateEntries rejects a cover that is not a real image", () => {
+  // 回归：曾经 /uploads 下的「图片」其实是飞书下载代理返回的 JSON，
+  // 文件存在但内容不是图片 —— 只查「文件存在」放行了它，结果全站裂图。
+  const root = makeRoot();
+  fs.writeFileSync(path.join(root.publicDir, "uploads/my-work/fake.jpg"), '{"code":0}');
+
+  const entry = normalizeEntry(
+    "works",
+    {
+      slug: "fake-cover",
+      title: "假封面",
+      date: "2026-10-30",
+      status: "active",
+      cover: "uploads/my-work/fake.jpg",
+    },
+    "正文",
+    "fake-cover.md",
+  );
+
+  assert.throws(
+    () => validateEntries("works", [entry], root.publicDir),
+    /cover is not a valid image file/,
+    "应该是图片但实际是 JSON 的 cover 必须被拒绝",
   );
 });
 

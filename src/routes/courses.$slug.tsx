@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Prose } from "@/components/Prose";
 import { findCourse, loadCourses, neighbours } from "@/lib/data";
+import { pageSeo, courseLd, ldOne } from "@/lib/seo";
 
 export const Route = createFileRoute("/courses/$slug")({
   loader: ({ params }) => {
@@ -11,14 +12,18 @@ export const Route = createFileRoute("/courses/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const entry = loaderData;
-    return {
-      meta: [
-        { title: `${entry.title} — Courses · 数字旷野` },
-        { name: "description", content: entry.excerpt ?? "" },
-        { property: "og:title", content: `${entry.title} — Courses · 数字旷野` },
-        { property: "og:description", content: entry.excerpt ?? "" },
-      ],
-    };
+    const path = `/courses/${entry.slug}`;
+    const price = entry.price ? `，价格 ${entry.price}` : "";
+    return pageSeo({
+      path,
+      title: `${entry.title} — 价格与大纲 · 数字旷野`,
+      description:
+        entry.excerpt ??
+        `${entry.title}${price}。数字旷野亲手做的课程，附章节大纲与报名入口。`,
+      image: entry.cover,
+      jsonLd: ldOne(courseLd(entry, path, entry.cover)),
+      keywords: ["独立开发课程", "在线课程", entry.tag].filter(Boolean),
+    });
   },
   notFoundComponent: () => (
     <section className="mx-auto max-w-3xl px-6 py-24 text-center">
@@ -54,12 +59,6 @@ function CourseDetail() {
               <span>{entry.tag}</span>
             </>
           )}
-          {entry.students && (
-            <>
-              <span className="h-px w-6 bg-hairline" />
-              <span>{entry.students}</span>
-            </>
-          )}
           {entry.badge && (
             <>
               <span className="h-px w-6 bg-hairline" />
@@ -82,7 +81,7 @@ function CourseDetail() {
 
         <div className="mt-8 flex flex-wrap items-center gap-3">
           <div className="flex items-baseline gap-3">
-            <span className="font-display text-4xl text-foreground">{entry.price}</span>
+            <span className="font-display text-4xl text-foreground">{entry.price || "咨询"}</span>
             {entry.original && (
               <span className="font-mono text-sm text-muted-foreground line-through">
                 {entry.original}
@@ -99,12 +98,13 @@ function CourseDetail() {
               {entry.cta ?? "立即报名"} →
             </a>
           ) : (
-            <span
-              onClick={() => window.location.href = `/courses/pay?slug=${slug}`}
-              className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+            <Link
+              to="/courses/pay"
+              search={{ slug }}
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
               {entry.cta ?? "立即报名"} →
-            </span>
+            </Link>
           )}
           <Link
             to="/courses"
@@ -145,16 +145,13 @@ function CourseDetail() {
                 立即加入
               </div>
               <div className="flex items-baseline gap-3">
-                <span className="font-display text-5xl text-foreground">{entry.price}</span>
+                <span className="font-display text-5xl text-foreground">{entry.price || "咨询"}</span>
                 {entry.original && (
                   <span className="font-mono text-sm text-muted-foreground line-through">
                     {entry.original}
                   </span>
                 )}
               </div>
-              {entry.students && (
-                <div className="mt-1 font-mono text-xs text-muted-foreground">{entry.students}</div>
-              )}
 
               {entry.url ? (
                 <a
@@ -166,26 +163,18 @@ function CourseDetail() {
                   {entry.cta ?? "立即报名"} →
                 </a>
               ) : (
-                <span
-                  onClick={() => window.location.href = `/courses/pay?slug=${slug}`}
-                  className="mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
+                <Link
+                  to="/courses/pay"
+                  search={{ slug }}
+                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3.5 text-sm font-medium text-primary-foreground transition-transform hover:-translate-y-0.5"
                 >
                   {entry.cta ?? "立即报名"} →
-                </span>
+                </Link>
               )}
               <p className="mt-4 text-center font-mono text-[10px] text-muted-foreground">
                 30 天无理由退款保障
               </p>
             </div>
-
-            {entry.students && (
-              <div className="rounded-[1.75rem] border border-hairline bg-background p-6">
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                  已有学员
-                </div>
-                <div className="mt-2 font-display text-3xl text-foreground">{entry.students}</div>
-              </div>
-            )}
           </div>
         </aside>
       </div>

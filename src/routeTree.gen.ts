@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WritingRouteImport } from './routes/writing'
 import { Route as WorkRouteImport } from './routes/work'
 import { Route as VideosRouteImport } from './routes/videos'
+import { Route as StartHereRouteImport } from './routes/start-here'
 import { Route as NewsRouteImport } from './routes/news'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ChatRouteImport } from './routes/chat'
@@ -36,6 +37,11 @@ const WorkRoute = WorkRouteImport.update({
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
   path: '/videos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartHereRoute = StartHereRouteImport.update({
+  id: '/start-here',
+  path: '/start-here',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NewsRoute = NewsRouteImport.update({
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/chat': typeof ChatRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
+  '/start-here': typeof StartHereRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -110,6 +117,7 @@ export interface FileRoutesByTo {
   '/chat': typeof ChatRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
+  '/start-here': typeof StartHereRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -126,6 +134,7 @@ export interface FileRoutesById {
   '/chat': typeof ChatRoute
   '/courses': typeof CoursesRouteWithChildren
   '/news': typeof NewsRoute
+  '/start-here': typeof StartHereRoute
   '/videos': typeof VideosRouteWithChildren
   '/work': typeof WorkRouteWithChildren
   '/writing': typeof WritingRouteWithChildren
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/courses'
     | '/news'
+    | '/start-here'
     | '/videos'
     | '/work'
     | '/writing'
@@ -158,6 +168,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/courses'
     | '/news'
+    | '/start-here'
     | '/videos'
     | '/work'
     | '/writing'
@@ -173,6 +184,7 @@ export interface FileRouteTypes {
     | '/chat'
     | '/courses'
     | '/news'
+    | '/start-here'
     | '/videos'
     | '/work'
     | '/writing'
@@ -189,6 +201,7 @@ export interface RootRouteChildren {
   ChatRoute: typeof ChatRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   NewsRoute: typeof NewsRoute
+  StartHereRoute: typeof StartHereRoute
   VideosRoute: typeof VideosRouteWithChildren
   WorkRoute: typeof WorkRouteWithChildren
   WritingRoute: typeof WritingRouteWithChildren
@@ -215,6 +228,13 @@ declare module '@tanstack/react-router' {
       path: '/videos'
       fullPath: '/videos'
       preLoaderRoute: typeof VideosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/start-here': {
+      id: '/start-here'
+      path: '/start-here'
+      fullPath: '/start-here'
+      preLoaderRoute: typeof StartHereRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/news': {
@@ -341,6 +361,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChatRoute: ChatRoute,
   CoursesRoute: CoursesRouteWithChildren,
   NewsRoute: NewsRoute,
+  StartHereRoute: StartHereRoute,
   VideosRoute: VideosRouteWithChildren,
   WorkRoute: WorkRouteWithChildren,
   WritingRoute: WritingRouteWithChildren,
